@@ -12,7 +12,8 @@ const mySavedId = localStorage.getItem('macarena_my_id');
 peer = new Peer(mySavedId);
 
 peer.on('open', (id) => {
-    document.getElementById('display-my-id').innerText = id;
+    const displayEl = document.getElementById('display-my-id');
+    if (displayEl) displayEl.innerText = id;
     
     // RECONEXIÓN AUTOMÁTICA
     const lastPartner = localStorage.getItem('last_partner_id');
@@ -44,8 +45,12 @@ peer.on('error', (err) => {
 function selectRole(role) {
     myRole = role;
     localStorage.setItem('macarena_role', role);
-    document.getElementById('role-client').classList.toggle('active', role === 'cliente');
-    document.getElementById('role-vendor').classList.toggle('active', role === 'vendedor');
+    
+    const clientBtn = document.getElementById('role-client');
+    const vendorBtn = document.getElementById('role-vendor');
+    
+    if (clientBtn) clientBtn.classList.toggle('active', role === 'cliente');
+    if (vendorBtn) vendorBtn.classList.toggle('active', role === 'vendedor');
 }
 
 function connectToPeer(savedId = null) {
@@ -65,15 +70,25 @@ function connectToPeer(savedId = null) {
 }
 
 function setupChat() {
-    document.getElementById('access-screen').style.display = 'none';
-    const wrap = document.getElementById('chat-wrap');
-    wrap.classList.add('visible');
+    if (document.getElementById('access-screen')) {
+        document.getElementById('access-screen').style.display = 'none';
+    }
     
-    document.getElementById('chat-title').innerText = myRole === 'cliente' ? "VENDEDOR MACARENA" : "CLIENTE MACARENA";
+    const wrap = document.getElementById('chat-wrap');
+    if (wrap) wrap.classList.add('visible');
+    
+    const titleEl = document.getElementById('chat-title');
+    if (titleEl) {
+        titleEl.innerText = myRole === 'cliente' ? "VENDEDOR MACARENA" : "CLIENTE MACARENA";
+    }
 
-    // Cargar historial
+    // Cargar historial de LocalStorage
     loadHistory();
 
+    // Remover listeners viejos para evitar duplicación de mensajes en reconexión
+    conn.off('data');
+
+    // Escuchar datos entrantes
     conn.on('data', (data) => {
         // Verificar si es un mensaje de control para cerrar el chat
         if (data.type === 'CONTROL_EXIT') {
@@ -85,11 +100,26 @@ function setupChat() {
         // Si no es un mensaje de control, es un mensaje normal
         saveMessage(data, 'recv'); 
         renderMsg(data, 'recv', true);
-        document.getElementById('notif-sound').play().catch(() => {}); 
+        
+        const sound = document.getElementById('notif-sound');
+        if (sound) sound.play().catch(() => {}); 
     });
+
+    // Escuchar el evento Enter en el campo de texto de manera automática
+    const inputEl = document.getElementById('msg-input');
+    if (inputEl) {
+        inputEl.onkeydown = (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        };
+    }
+} // <--- ¡AQUÍ ESTABA EL CIERRE QUE FALTABA!
 
 function sendMessage() {
     const input = document.getElementById('msg-input');
+    if (!input) return;
+    
     const text = input.value.trim();
 
     if (text && conn && conn.open) {
@@ -114,6 +144,8 @@ function saveMessage(data, type) {
 
 function renderMsg(data, type, alreadySaved = false) {
     const container = document.getElementById('messages');
+    if (!container) return;
+    
     const row = document.createElement('div');
     row.className = `msg-row ${type}`;
 
@@ -131,6 +163,8 @@ function renderMsg(data, type, alreadySaved = false) {
 
 function loadHistory() {
     const container = document.getElementById('messages');
+    if (!container) return;
+    
     container.innerHTML = ''; 
     let history = JSON.parse(localStorage.getItem('macarena_history') || '[]');
     history.forEach(item => {
@@ -141,10 +175,9 @@ function loadHistory() {
 // Botones de control
 function clearChat() {
     if(confirm("¿Borrar todos los mensajes?")) {
-        // Eliminamos solo la lista de mensajes de la memoria
         localStorage.removeItem('macarena_history');
-        // Limpiamos la pantalla
-        document.getElementById('messages').innerHTML = '';
+        const container = document.getElementById('messages');
+        if (container) container.innerHTML = '';
     }
 }
 
@@ -160,9 +193,8 @@ function exitChat() {
     }
 }
 
-// Función auxiliar para limpiar y recargar
 function forceLocalExit() {
     localStorage.removeItem('last_partner_id');
-    localStorage.removeItem('macarena_history'); // Opcional: borrar historial al salir definitivamente
+    localStorage.removeItem('macarena_history'); 
     location.reload();
 }
