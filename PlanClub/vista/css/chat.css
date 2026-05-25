@@ -1,0 +1,276 @@
+/* 1. VARIABLES Y CONFIGURACIÓN GLOBAL */
+:root {
+  --neon-cyan:   #46d2da;
+  --neon-purple: #bc13fe;
+  --neon-pink:   #ff00ff;
+  --glass:       rgba(5, 5, 5, 0.9);
+  --border:      rgba(70, 210, 218, 0.3);
+  --text:        #ffffff;
+  --text-muted:  #aaaaaa;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: #000;
+}
+
+/* 2. FONDO Y CAPAS */
+.bg {
+  position: fixed;
+  inset: 0;
+  background: url('../img/fondo.png') center/cover no-repeat;
+  z-index: 0;
+}
+
+/* 3. PANTALLA DE ACCESO */
+.access-screen {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(8px);
+  background: rgba(0,0,0,0.2);
+}
+
+.access-card {
+  background: var(--glass);
+  border: 2px solid var(--neon-cyan);
+  border-radius: 24px;
+  padding: 40px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 0 40px rgba(70, 210, 218, 0.3);
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn { from {opacity:0; transform:scale(0.9);} to {opacity:1; transform:scale(1);} }
+
+.brand {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.8rem;
+  letter-spacing: 8px;
+  color: var(--neon-cyan);
+  text-transform: uppercase;
+  text-shadow: 0 0 15px var(--neon-cyan);
+  margin-bottom: 5px;
+}
+
+/* 4. BOTONES Y CAMPOS DE ENTRADA */
+.my-id-container {
+  background: rgba(255,255,255,0.05);
+  padding: 15px;
+  border-radius: 12px;
+  margin: 20px 0;
+  border: 1px dashed var(--neon-purple);
+}
+
+.my-id-tag {
+  font-size: 0.75rem;
+  color: var(--neon-purple);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+#display-my-id {
+  font-weight: bold;
+  color: white;
+  word-break: break-all;
+  margin-top: 5px;
+  display: block;
+  font-size: 0.9rem;
+}
+
+.field-label {
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  color: var(--neon-cyan);
+  text-transform: uppercase;
+  text-align: left;
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+
+.access-input {
+  width: 100%;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  color: white;
+  outline: none;
+  font-size: 0.9rem;
+  transition: 0.3s;
+}
+
+.access-input:focus { border-color: var(--neon-pink); box-shadow: 0 0 10px rgba(255, 0, 255, 0.2); }
+
+.role-select { display: flex; gap: 10px; margin-top: 10px; }
+
+.role-btn {
+  flex: 1; padding: 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.role-btn.active {
+  background: rgba(188, 19, 254, 0.2);
+  border-color: var(--neon-purple);
+  color: white;
+  box-shadow: 0 0 15px var(--neon-purple);
+}
+
+.enter-btn {
+  width: 100%;
+  margin-top: 30px;
+  padding: 16px;
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 900;
+  letter-spacing: 3px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+/* 5. VENTANA DE CHAT */
+.chat-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: none;
+  flex-direction: column;
+  background: var(--glass);
+}
+
+.chat-wrap.visible { display: flex; }
+
+.chat-header {
+  padding: 20px;
+  background: rgba(0,0,0,0.8);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* BOTONES DE CONTROL EN EL HEADER (Borrar/Salir) */
+.header-controls {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+    position: relative; /* Combinado para evitar conflictos */
+}
+
+.btn-header {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s;
+    letter-spacing: 1px;
+}
+
+.btn-clear:hover {
+    border-color: var(--neon-cyan);
+    color: var(--neon-cyan);
+    box-shadow: 0 0 10px rgba(70, 210, 218, 0.2);
+}
+
+.btn-exit:hover {
+    border-color: var(--neon-pink);
+    color: var(--neon-pink);
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.2);
+}
+
+/* 6. AREA DE MENSAJES */
+.messages {
+  flex: 1;
+  padding: 25px 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  background: rgba(0,0,0,0.2);
+  scrollbar-width: thin;
+  scrollbar-color: var(--neon-purple) transparent;
+}
+
+.messages::-webkit-scrollbar { width: 4px; }
+.messages::-webkit-scrollbar-thumb { background: var(--neon-purple); border-radius: 10px; }
+
+.msg-row { max-width: 85%; display: flex; flex-direction: column; animation: slideIn 0.3s ease; }
+@keyframes slideIn { from {opacity:0; transform: translateY(10px);} to {opacity:1; transform: translateY(0);} }
+
+.msg-row.sent { align-self: flex-end; }
+.msg-row.recv { align-self: flex-start; }
+
+.msg-bubble {
+  padding: 14px 20px;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  color: white;
+  line-height: 1.4;
+}
+
+.sent .msg-bubble {
+  background: rgba(188, 19, 254, 0.25);
+  border: 1px solid var(--neon-purple);
+  border-bottom-right-radius: 4px;
+}
+
+.recv .msg-bubble {
+  background: rgba(70, 210, 218, 0.25);
+  border: 1px solid var(--neon-cyan);
+  border-bottom-left-radius: 4px;
+}
+
+/* 7. AREA DE ENTRADA */
+.input-area {
+  padding: 25px;
+  display: flex;
+  gap: 12px;
+  background: rgba(0,0,0,0.9);
+  border-top: 1px solid var(--border);
+}
+
+#msg-input {
+  flex: 1;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--border);
+  padding: 16px;
+  border-radius: 15px;
+  color: white;
+  outline: none;
+}
+
+#send-btn {
+  width: 60px;
+  background: linear-gradient(135deg, var(--neon-cyan), #2aa8b0);
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}

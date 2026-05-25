@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macarena Bar — Live Chat VIP</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <link rel="stylesheet" href="../css/chat.css">
+</head>
+<body>
+
+<div class="bg"></div>
+
+<audio id="notif-sound" src="https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3"></audio>
+
+<div class="access-screen" id="access-screen">
+  <div class="access-card">
+    <div class="brand">MACARENA</div>
+    
+    <div class="my-id-container">
+      <span class="my-id-tag">Tu ID de conexión</span>
+      <span id="display-my-id">Cargando protocolo...</span>
+    </div>
+
+    <div class="field-label">ID de tu compañero</div>
+    <input class="access-input" id="other-id" type="text" placeholder="Pega el código aquí..." />
+
+    <div class="field-label">Ingresar como</div>
+    <div class="role-select">
+      <button class="role-btn active" id="role-client" onclick="selectRole('cliente')">CLIENTE</button>
+      <button class="role-btn" id="role-vendor" onclick="selectRole('vendedor')">VENDEDOR</button>
+    </div>
+
+    <button class="enter-btn" onclick="connectToPeer()">INICIAR CHAT EN VIVO</button>
+  </div>
+</div>
+
+<div class="chat-wrap" id="chat-wrap">
+  <div class="chat-header">
+    <div class="avatar" id="status-avatar">M</div>
+    <div class="header-info">
+      <div id="chat-title" style="color:white; font-weight: bold; letter-spacing: 1px;">SISTEMA VIP</div>
+      <div id="chat-status" style="color:var(--neon-cyan); font-size: 0.7rem; font-weight: bold;">● CONECTADO</div>
+    </div>
+
+    <div class="header-controls" style="margin-left: auto; display: flex; gap: 10px;">
+        <button class="btn-header btn-clear" onclick="clearChat()">Borrar</button>
+        <button class="btn-header btn-exit" onclick="exitChat()">Salir</button>
+    </div>
+  </div>
+
+  <div class="messages" id="messages"></div>
+
+  <div class="input-area">
+    <input type="text" id="msg-input" placeholder="Escribe un mensaje..." autocomplete="off"/>
+    <button id="send-btn" onclick="sendMessage()">
+      <svg viewBox="0 0 24 24" width="28" height="28"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" fill="white"/></svg>
+    </button>
+  </div>
+</div>
+
+<script src="../js/chat.js"></script>
+</body>
+</html>

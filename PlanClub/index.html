@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlanClub - Premium Experience</title>
+
+    <!-- Ruta corregida para salir de HTML y entrar a CSS -->
+    <link rel="stylesheet" href="./vista/css/login.css">
+</head>
+
+<body>
+
+    <div class="secret-trigger" onclick="abrirAdmin()"></div>
+
+    <div class="logo-container">
+        <!-- RUTA CORREGIDA: Sale de HTML y entra a IMG -->
+        <img src="./vista/img/logo.png" alt="Logo" class="logo-image">
+        <div class="logo">PLANCLUB</div>
+    </div>
+
+    <div class="view active">
+        <button class="btn" onclick="showPanel('loginPanel')">INICIAR SESIÓN</button>
+        <br>
+        <button class="btn" onclick="showPanel('registerPanel')">REGISTRARSE</button>
+    </div>
+
+    <!-- Panel de Login -->
+    <div class="panel" id="loginPanel">
+        <h2 style="margin-bottom: 20px; color: var(--champagne-main)">BIENVENIDO</h2>
+        <div class="input-group"><input type="text" id="loginUser" placeholder="Usuario"></div>
+        <div class="input-group">
+            <div style="position: relative;">
+                <input type="password" id="loginPass" placeholder="Contraseña" style="padding-right:40px;">
+                <span onclick="togglePassword('loginPass', this)" 
+                      style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">🐵</span>
+            </div>
+        </div>
+        <button class="btn" onclick="validarLogin()">ENTRAR</button>
+        <p style="margin-top:10px; color:#aaa; cursor:pointer;" onclick="showPanel('recoverPanel')">¿Olvidaste tu contraseña?</p>    
+        <div id="loginMsg" class="msg"></div>
+        <div class="close" onclick="hidePanels()">VOLVER</div>
+    </div>
+
+    <!-- Panel de Registro -->
+    <div class="panel" id="registerPanel">
+        <h2 style="margin-bottom: 20px; color: var(--champagne-main)">NUEVA CUENTA</h2>
+        <div class="input-group"><input type="text" id="regUser" placeholder="Crea un Usuario"></div>
+        <div class="input-group">
+            <div style="position: relative;">
+                <input type="password" id="regPass" placeholder="Crea una Contraseña" style="padding-right:40px;">
+                <span onclick="togglePassword('regPass', this)" 
+                      style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">🙈</span>
+            </div>
+        </div>
+        <p class="password-hint">La contraseña debe tener al menos 8 caracteres, una letra mayúscula y un número.</p>
+        <button class="btn" onclick="guardarRegistro()">REGISTRARME</button>
+        <div id="regMsg" class="msg"></div>
+        <div class="close" onclick="hidePanels()">CANCELAR</div>
+    </div>
+
+    <!-- Panel Admin -->
+    <div class="panel" id="adminPanel">
+        <h2 style="color: var(--champagne-main)">ADMIN CONTROL</h2>
+        <div class="admin-list">
+            <p style="font-size: 12px; color: #888">Usuario actual en memoria:</p>
+            <p id="currentUserDisplay" style="margin: 10px 0; font-weight: bold; color: var(--neon-cyan)">Ninguno</p>
+            <button class="btn" style="width: 100%; background: #ff4d4d; color: white; padding: 10px;" onclick="borrarTodo()">BORRAR MEMORIA</button>
+        </div>
+        <div class="close" onclick="hidePanels()">CERRAR GESTOR</div>
+    </div>
+
+    <!-- Panel Recuperar -->
+    <div class="panel" id="recoverPanel">
+        <h2 style="margin-bottom: 20px; color: var(--champagne-main)">RECUPERAR CONTRASEÑA</h2>
+        <div class="input-group"><input type="text" id="recoverUser" placeholder="Ingresa tu usuario"></div>
+        <div class="input-group"><input type="password" id="newPass" placeholder="Nueva contraseña"></div>
+        <button class="btn" onclick="recuperarPass()">CAMBIAR CONTRASEÑA</button>
+        <div id="recoverMsg" class="msg"></div>
+        <div class="close" onclick="hidePanels()">VOLVER</div>
+    </div>
+
+    <!-- Ruta corregida para el Script -->
+    <script src="./vista/js/login.js"></script>
+</body>
+</html>
