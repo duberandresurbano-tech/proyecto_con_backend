@@ -10,9 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
 
             // Obtenemos el texto del botón para saber a dónde va el usuario
-            const textoBoton = boton.textContent.toLowerCase();
+            const textoBoton = text = boton.textContent.toLowerCase();
 
-            // Lógica de redirección fluida según tu lista de HTMLs mapeados
+            // Lógica de redirección fluida (estando adentro de vista/html/)
             if (textoBoton.includes("catálogo") || textoBoton.includes("bebidas") || textoBoton.includes("pedir")) {
                 window.location.href = "catalogo.html";
             } 
@@ -25,9 +25,9 @@ document.addEventListener("DOMContentLoaded", () => {
             else if (textoBoton.includes("perfil") || textoBoton.includes("mi cuenta")) {
                 window.location.href = "perfil.html";
             }
+            // REDIRECCIÓN DEFINITIVA: Salimos de las subcarpetas para volver al index de la raíz
             else if (textoBoton.includes("salir") || textoBoton.includes("cerrar")) {
-                // Si tienes botón de salir al login
-                window.location.href = "login.html";
+                window.location.href = "../../index.html"; 
             }
             else {
                 // Por si acaso hay un enlace con href directo configurado en el HTML

@@ -37,7 +37,7 @@ function borrarTodo() {
     }
 }
 
-// --- REGISTRO (Modificado para incluir Rol) ---
+// --- REGISTRO ---
 function guardarRegistro() {
     const user = document.getElementById('regUser').value.trim();
     const pass = document.getElementById('regPass').value.trim();
@@ -69,14 +69,14 @@ function guardarRegistro() {
     // Guardamos credenciales + el rol base
     localStorage.setItem('pc_user', user.toLowerCase());
     localStorage.setItem('pc_pass', pass); 
-    localStorage.setItem('pc_role', 'cliente'); // <--- Todo el que se registre en la app entra como cliente
+    localStorage.setItem('pc_role', 'cliente'); 
     
     msg.style.color = "#4dff88"; 
     msg.innerText = "¡Usuario registrado con éxito!";
     setTimeout(hidePanels, 1500);
 }
 
-// --- LOGIN (Modificado con Redirección según Rol) ---
+// --- LOGIN ---
 function validarLogin() {
     const userIn = document.getElementById('loginUser').value.trim().toLowerCase();
     const passIn = document.getElementById('loginPass').value.trim();
@@ -113,27 +113,26 @@ function validarLogin() {
         }
     }
 
-    // Si no coincidió con nada, rebota el ingreso
     if (finalRole === "") {
         msg.style.color = "#ff4d4d"; 
         msg.innerText = "Usuario/contraseña incorrectos o no registrados";
         return;
     }
 
-    // Guardamos el rol en sesión para que los guardianes de las otras páginas lo lean
+    // Guardamos el rol en sesión para que los guardianes lo lean
     localStorage.setItem('macarena_role', finalRole);
 
     msg.style.color = "#4dff88"; 
     msg.innerText = `¡Ingresando como ${finalRole.toUpperCase()}...!`;
     
-    // Redirección inteligente dependiendo de quién ingresó
+    // REDIRECCIÓN DEFINITIVA: Entrando desde la raíz hacia adentro de las carpetas
     setTimeout(() => { 
         if (finalRole === 'admin') {
-            window.location.href = "reserva.html"; 
+            window.location.href = "vista/html/reserva.html"; 
         } else if (finalRole === 'vendedor') {
-            window.location.href = "chat.html"; 
+            window.location.href = "vista/html/chat.html"; 
         } else {
-            window.location.href = "inicio.html"; 
+            window.location.href = "vista/html/inicio.html"; 
         }
     }, 1500);
 }
