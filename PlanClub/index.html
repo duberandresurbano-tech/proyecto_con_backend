@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PlanClub - Premium Experience</title>
 
-    <!-- Ruta corregida para salir de HTML y entrar a CSS -->
-    <link rel="stylesheet" href="./vista/css/login.css">
+    <link rel="stylesheet" href="vista/css/login.css">
 </head>
 
 <body>
@@ -14,8 +13,7 @@
     <div class="secret-trigger" onclick="abrirAdmin()"></div>
 
     <div class="logo-container">
-        <!-- RUTA CORREGIDA: Sale de HTML y entra a IMG -->
-        <img src="./vista/img/logo.png" alt="Logo" class="logo-image">
+        <img src="vista/img/logo.png" alt="Logo PlanClub" class="logo-image">
         <div class="logo">PLANCLUB</div>
     </div>
 
@@ -25,10 +23,11 @@
         <button class="btn" onclick="showPanel('registerPanel')">REGISTRARSE</button>
     </div>
 
-    <!-- Panel de Login -->
     <div class="panel" id="loginPanel">
         <h2 style="margin-bottom: 20px; color: var(--champagne-main)">BIENVENIDO</h2>
-        <div class="input-group"><input type="text" id="loginUser" placeholder="Usuario"></div>
+        <div class="input-group">
+            <input type="text" id="loginUser" placeholder="Usuario">
+        </div>
         <div class="input-group">
             <div style="position: relative;">
                 <input type="password" id="loginPass" placeholder="Contraseña" style="padding-right:40px;">
@@ -42,10 +41,11 @@
         <div class="close" onclick="hidePanels()">VOLVER</div>
     </div>
 
-    <!-- Panel de Registro -->
     <div class="panel" id="registerPanel">
         <h2 style="margin-bottom: 20px; color: var(--champagne-main)">NUEVA CUENTA</h2>
-        <div class="input-group"><input type="text" id="regUser" placeholder="Crea un Usuario"></div>
+        <div class="input-group">
+            <input type="text" id="regUser" placeholder="Crea un Usuario">
+        </div>
         <div class="input-group">
             <div style="position: relative;">
                 <input type="password" id="regPass" placeholder="Crea una Contraseña" style="padding-right:40px;">
@@ -59,7 +59,6 @@
         <div class="close" onclick="hidePanels()">CANCELAR</div>
     </div>
 
-    <!-- Panel Admin -->
     <div class="panel" id="adminPanel">
         <h2 style="color: var(--champagne-main)">ADMIN CONTROL</h2>
         <div class="admin-list">
@@ -70,17 +69,19 @@
         <div class="close" onclick="hidePanels()">CERRAR GESTOR</div>
     </div>
 
-    <!-- Panel Recuperar -->
     <div class="panel" id="recoverPanel">
         <h2 style="margin-bottom: 20px; color: var(--champagne-main)">RECUPERAR CONTRASEÑA</h2>
-        <div class="input-group"><input type="text" id="recoverUser" placeholder="Ingresa tu usuario"></div>
-        <div class="input-group"><input type="password" id="newPass" placeholder="Nueva contraseña"></div>
+        <div class="input-group">
+            <input type="text" id="recoverUser" placeholder="Ingresa tu usuario">
+        </div>
+        <div class="input-group">
+            <input type="password" id="newPass" placeholder="Nueva contraseña">
+        </div>
         <button class="btn" onclick="recuperarPass()">CAMBIAR CONTRASEÑA</button>
         <div id="recoverMsg" class="msg"></div>
         <div class="close" onclick="hidePanels()">VOLVER</div>
     </div>
 
-    <!-- Ruta corregida para el Script -->
-    <script src="./vista/js/login.js"></script>
+    <script src="vista/js/login.js"></script>
 </body>
 </html>
