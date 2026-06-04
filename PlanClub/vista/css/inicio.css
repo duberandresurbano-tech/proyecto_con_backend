@@ -1,13 +1,17 @@
-/* ==========================================================================
-   1. VARIABLES DE DISEÑO (CHAMPAÑA & LIQUID GLASS)
-   ========================================================================== */
+/* ============================================================
+   1. VARIABLES DE DISEÑO (CRYSTAL CLEAR & CHAMPAGNE)
+   ============================================================ */
 :root {
-    --champagne-dark: #b89b5e;
+    --neon-cyan: #00f3ff;
     --champagne-main: #f3e5ab;
     --champagne-bright: #ffffff;
-    /* Degradado base para el cristal líquido */
-    --glass-base: linear-gradient(to bottom, #d5b875 0%, #a3823c 50%, #866623 50.1%, #bfa059 100%);
-    --bg-overlay: rgba(5, 5, 5, 0.65);
+    --champagne-dark: #b89b5e;
+    --gold-gradient: linear-gradient(45deg, #c8a74d, #f5d76e);
+    
+    /* Variables de cristal transparente */
+    --crystal-clear: rgba(255, 255, 255, 0.02);
+    --crystal-hover: rgba(255, 255, 255, 0.12);
+    --crystal-border: rgba(255, 255, 255, 0.3);
 }
 
 * {
@@ -17,65 +21,35 @@
     font-family: 'Lexend', sans-serif;
 }
 
+/* ============================================================
+   2. CUERPO (Fondo y Estética)
+   ============================================================ */
 body {
     margin: 0;
-    padding: 0;
-    width: 100%;
-    min-height: 100vh;
+    color: white;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start; 
     align-items: center;
-    background-color: #050505;
-    overflow-x: hidden;
-}
-
-/* ==========================================================================
-   2. FONDO SFUMATO
-   ========================================================================== */
-.background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(var(--bg-overlay), var(--bg-overlay)), 
-                url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+    text-align: center;
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url("../IMG/fondo.png");
     background-size: cover;
     background-position: center;
-    filter: blur(4px);
-    z-index: -1;
-    transform: scale(1.05);
+    background-attachment: fixed;
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding-top: 40px;
 }
 
-/* Contenedor principal */
-.container {
-    text-align: center;
-    width: 90%;
-    max-width: 380px;
-}
-
-/* ==========================================================================
-   3. SECUENCIA DE ENTRADA: LOGO E IMAGEN
-   ========================================================================== */
-.logo-image {
-    width: 140px;
-    height: auto;
-    margin-bottom: 10px;
-    filter: drop-shadow(0 0 15px rgba(184, 155, 94, 0.5));
-    
-    /* 1. ANIMACIÓN DEL LOGO: Aparece primero */
-    opacity: 0;
-    animation: aparecerLogo 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.2s; 
-}
-
+/* ============================================================
+   3. LOGO Y SUBTITULO (PlanClub + BAR Gigante y Equilibrado)
+   ============================================================ */
 .logo {
-    font-size: 3rem;
+    font-size: 4.5rem; 
     font-weight: 900;
-    letter-spacing: 2px;
+    letter-spacing: 1px; 
     text-transform: uppercase;
-    margin-bottom: 6px;
+    margin-bottom: 35px; 
 
     background: linear-gradient(to right, 
         var(--champagne-dark) 0%, 
@@ -87,123 +61,121 @@ body {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    
-    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.15));
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.25)); 
     transition: background-position 0.6s ease, filter 0.4s ease;
-    
-    /* 2. ANIMACIÓN DEL NOMBRE (PlanClub): Aparece justo después del logo */
-    opacity: 0;
-    animation: aparecerNombre 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: 0.6s; /* Espera a que el logo empiece a revelarse */
-}
 
-.container:hover .logo { 
-    background-position: right center; 
-    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.35));
+    /* 🔥 MANTENIDO: Animación elástica de entrada para el Name */
+    animation: entradaSuaveLogo 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 .logo span {
     display: block;
-    font-size: 0.85rem;
-    letter-spacing: 6px;
+    font-size: 1.1rem; 
+    letter-spacing: 12px; 
+    text-indent: 12px; 
     color: #aaaaaa;
-    font-weight: 400;
-    margin-top: 6px;
+    font-weight: 400; 
+    margin-top: 5px; 
     -webkit-text-fill-color: #aaaaaa; 
     background: none;
 }
 
-/* Contenedor de la lista */
+.logo:hover { 
+    background-position: right center; 
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
+}
+
+/* Contenedor que agrupa tus enlaces */
 .menu-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    margin-top: 36px;
+    align-items: center;
+    width: 100%;
 }
 
-/* ==========================================================================
-   4. BOTONES: EFECTO IPHONE LIQUID GLASS & ENTRADA EN CASCADA
-   ========================================================================== */
+/* ============================================================
+   4. BOTONES (Cristal Transparente + Escalado Fluido Completo)
+   ============================================================ */
 .btn {
     display: flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    width: 100%;
-    max-width: 290px;
-    margin: 0 auto;
-    padding: 14px 30px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    letter-spacing: 1px;
+    width: 250px;
+    padding: 18px;
+    margin: 12px;
+    font-weight: bold;
+    font-size: 16px;
     text-transform: uppercase;
-    border-radius: 50px;
+    letter-spacing: 1px;
     cursor: pointer;
-    
-    /* El texto en negro con una sombra sutil blanca abajo imita el relieve de iOS */
-    color: #000000;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+    border-radius: 20px; 
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 
-    /* --- FÍSICA LIQUID GLASS (Efecto cristal líquido de iPhone) --- */
-    background: var(--glass-base);
-    border-top: 1.5px solid rgba(255, 255, 255, 0.7);    /* Reflejo de luz superior */
-    border-bottom: 2px solid rgba(0, 0, 0, 0.4);       /* Sombra de apoyo inferior */
-    border-left: 1px solid rgba(255, 255, 255, 0.2);
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
-    
-    /* Inyección de múltiples sombras para dar volumen 3D de burbuja */
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5),  /* Brillo interno superior */
-                inset 0 -4px 10px rgba(0, 0, 0, 0.2),     /* Sombra interna inferior */
-                0 4px 10px rgba(0, 0, 0, 0.4);            /* Sombra proyectada en el fondo */
+    /* Cristal Transparente */
+    background: var(--crystal-clear);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: 1px solid var(--crystal-border);
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.25),
+                0 4px 15px rgba(0, 0, 0, 0.2);
 
-    /* Configuración de transición y animación por defecto */
-    opacity: 0;
-    will-change: transform, opacity;
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+    /* 🛠️ ULTRA FLUIDO: Transición limpia de 0.3s idéntica a tu login en todas las propiedades */
+    transition: all 0.3s ease-in-out;
+
+    /* Animación de entrada en cascada modificada (Solo maneja opacidad para no trabar el tamaño) */
+    animation: entradaCascadaLimpia 0.5s ease-out forwards;
+    opacity: 0; 
 }
 
-/* 3. ANIMACIONES EN CASCADA DESDE LA IZQUIERDA */
-/* Usamos selectores nth-child para controlar cada botón de forma individual en el HTML */
+/* Tiempos de retraso en cascada para tus 5 enlaces (Mantenidos) */
+.btn:nth-child(1) { animation-delay: 0.3s; }
+.btn:nth-child(2) { animation-delay: 0.45s; }
+.btn:nth-child(3) { animation-delay: 0.6s; }
+.btn:nth-child(4) { animation-delay: 0.75s; }
+.btn:nth-child(5) { animation-delay: 0.9s; }
 
-.btn:nth-child(1) {
-    animation: entrarIzquierda 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-    animation-delay: 1.1s; /* Entra después del nombre */
-}
-
-.btn:nth-child(2) {
-    animation: entrarIzquierda 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-    animation-delay: 1.3s; /* Entra 200ms después del botón 1 */
-}
-
-.btn:nth-child(3) {
-    animation: entrarIzquierda 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-    animation-delay: 1.5s; /* Entra 200ms después del botón 2 */
-}
-
-/* Hovers elásticos interactivos */
+/* El efecto hover ahora responde y regresa con total fluidez */
 .btn:hover {
-    transform: scale(1.04);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6),
-                inset 0 -2px 10px rgba(0, 0, 0, 0.1),
-                0 6px 20px rgba(184, 155, 94, 0.4);
-    filter: brightness(1.08); /* Simula que el cristal se ilumina al tocarlo */
+    transform: scale(1.05); /* Se agranda de forma sutil y limpia */
+    background: var(--crystal-hover); 
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.4),
+                0 0 25px rgba(255, 255, 255, 0.15);
 }
 
 .btn:active {
     transform: scale(0.98);
-    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.5), 
-                0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* ==========================================================================
-   5. HOJAS DE TIEMPO (KEYFRAMES DE ANIMACIONES)
-   ========================================================================== */
+/* ============================================================
+   5. KEYFRAMES MODIFICADOS (Para liberar el escalado)
+   ============================================================ */
 
-/* Animación Logo: Escalado suave desde el centro */
-@keyframes aparecerLogo {
+/* 🛠️ NUEVO: Esta animación solo maneja la opacidad en cascada, 
+   dejando el tamaño libre para que el hover funcione perfecto */
+@keyframes entradaCascadaLimpia {
     0% {
         opacity: 0;
-        transform: scale(0.7);
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+/* ============================================================
+   5. KEYFRAMES (Las físicas de escala automáticas)
+   ============================================================ */
+
+/* El Name aparece escalando desde el fondo con un rebote elástico premium */
+@keyframes entradaSuaveLogo {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    70% {
+        transform: scale(1.05);
     }
     100% {
         opacity: 1;
@@ -211,30 +183,21 @@ body {
     }
 }
 
-/* Animación Nombre: Aparece revelándose hacia abajo */
-@keyframes aparecerNombre {
+/* Los botones se inflan desde el centro hacia afuera en fila */
+@keyframes popEntradaBotones {
     0% {
         opacity: 0;
-        transform: translateY(-20px);
+        transform: scale(0.6);
     }
     100% {
         opacity: 1;
-        transform: translateY(0);
+        transform: scale(1);
     }
 }
 
-/* Animación Botones: Vienen desde la izquierda externa y frenan en el centro */
-@keyframes entrarIzquierda {
-    0% {
-        opacity: 0;
-        transform: translateX(-120px);
-    }
-    60% {
-        opacity: 0.8;
-        transform: translateX(5px); /* Pequeño rebasamiento para dar efecto látigo */
-    }
-    100% {
-        opacity: 1;
-        transform: translateX(0);
+/* Ajuste automático para celulares */
+@media (max-width: 400px) {
+    .logo {
+        font-size: 3.5rem;
     }
 }
