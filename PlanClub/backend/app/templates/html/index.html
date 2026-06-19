@@ -115,10 +115,10 @@
 
     <div class="panel" id="loginPanel">
         <h2 style="margin-bottom: 20px; color: var(--champagne-main)">BIENVENIDO</h2>
-        <div class="input-group"><input type="text" id="loginUser" placeholder="Usuario"></div>
+        <div class="input-group"><input type="text" id="loginUser" placeholder="Usuario" onkeydown="if(event.key==='Enter') validarLogin()"></div>
         <div class="input-group">
             <div style="position: relative;">
-                <input type="password" id="loginPass" placeholder="Contraseña" style="padding-right:40px;">
+                <input type="password" id="loginPass" placeholder="Contraseña" style="padding-right:40px;" onkeydown="if(event.key==='Enter') validarLogin()">
                 <span onclick="togglePassword('loginPass', this)" 
                       style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">🐵</span>
             </div>
@@ -131,13 +131,19 @@
 
     <div class="panel" id="registerPanel">
         <h2 style="margin-bottom: 20px; color: var(--champagne-main)">NUEVA CUENTA</h2>
-        <div class="input-group"><input type="text" id="regUser" placeholder="Crea un Usuario"></div>
+        <div class="input-group"><input type="text" id="regUser" placeholder="Crea un Usuario" onkeydown="if(event.key==='Enter') guardarRegistro()"></div>
         <div class="input-group">
             <div style="position: relative;">
-                <input type="password" id="regPass" placeholder="Crea una Contraseña" style="padding-right:40px;">
+                <input type="password" id="regPass" placeholder="Crea una Contraseña" style="padding-right:40px;" onkeydown="if(event.key==='Enter') guardarRegistro()">
                 <span onclick="togglePassword('regPass', this)" 
                       style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">🙈</span>
             </div>
+        </div>
+        <div class="input-group"><input type="tel" id="regTelefono" placeholder="Número de teléfono" onkeydown="if(event.key==='Enter') guardarRegistro()"></div>
+        <div class="input-group"><input type="email" id="regCorreo" placeholder="Correo electrónico" onkeydown="if(event.key==='Enter') guardarRegistro()"></div>
+        <div class="input-group">
+            <label style="display:block; font-size:0.75rem; color:#888; margin-bottom:6px; letter-spacing:1px;">FECHA DE NACIMIENTO</label>
+            <input type="date" id="regFechaNac" onkeydown="if(event.key==='Enter') guardarRegistro()">
         </div>
         <p class="password-hint">La contraseña debe tener al menos 8 caracteres, una letra mayúscula y un número.</p>
         <button class="btn" onclick="guardarRegistro()">REGISTRARME</button>
