@@ -10,27 +10,27 @@ document.addEventListener("DOMContentLoaded", () => {
             e.preventDefault();
 
             // Obtenemos el texto del botón para saber a dónde va el usuario
-            const textoBoton = text = boton.textContent.toLowerCase();
+            const textoBoton = boton.textContent.toLowerCase();
 
-            // Lógica de redirección fluida (estando adentro de vista/html/)
+            // 🛠️ CORREGIDO: Redirecciones fluidas usando las rutas lógicas de Flask
             if (textoBoton.includes("catálogo") || textoBoton.includes("bebidas") || textoBoton.includes("pedir")) {
-                window.location.href = "catalogo.html";
+                window.location.href = "/catalogo";
             } 
             else if (textoBoton.includes("reserva") || textoBoton.includes("mesas")) {
-                window.location.href = "reserva.html";
+                window.location.href = "/reserva";
             } 
             else if (textoBoton.includes("chat") || textoBoton.includes("vip")) {
-                window.location.href = "chat.html";
+                window.location.href = "/chat";
             } 
             else if (textoBoton.includes("perfil") || textoBoton.includes("mi cuenta")) {
-                window.location.href = "perfil.html";
+                window.location.href = "/perfil";
             }
-            // REDIRECCIÓN DEFINITIVA: Salimos de las subcarpetas para volver al index de la raíz
+            // 🛠️ CORREGIDO: Para salir, apuntamos a la raíz (/) que renderiza tu panel de login
             else if (textoBoton.includes("salir") || textoBoton.includes("cerrar")) {
-                window.location.href = "../../index.html"; 
+                window.location.href = "/"; 
             }
             else {
-                // Por si acaso hay un enlace con href directo configurado en el HTML
+                // Por si acaso hay un enlace con un endpoint configurado en el HTML
                 const hrefDirecto = boton.getAttribute("href");
                 if (hrefDirecto && hrefDirecto !== "#") {
                     window.location.href = hrefDirecto;

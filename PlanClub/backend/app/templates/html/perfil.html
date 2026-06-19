@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/perfil.css') }}">
+</head>
+<body>
+
+    <div class="phone">
+        <a href="{{ url_for('main.inicio') }}" id="btn-regresar" class="btn-regresar" style="text-decoration: none;"> ⬅ </a>
+        <a href="#" class="top-icon right" onclick="openNotificationModal()"><i class="fa-solid fa-bell"></i></a>
+
+        <div class="title">PERFIL</div>
+
+        <div class="profile-pic-container">
+            <div id="mainProfilePic" class="profile-img-preview">
+                <i class="fa-solid fa-user"></i>
+            </div>
+            <div class="edit-photo-pencil" onclick="openPhotoModal()">
+                <i class="fa-solid fa-pencil"></i>
+            </div>
+        </div>
+
+        <form>
+            <div class="input-group">
+                <label>NOMBRE</label>
+                <input type="text" placeholder="Escribe tu nombre">
+            </div>
+            <div class="input-group">
+                <label>APELLIDO</label>
+                <input type="text" placeholder="Escribe tu apellido">
+            </div>
+            <div class="input-group">
+                <label>CORREO</label>
+                <input type="email" placeholder="ejemplo@correo.com">
+            </div>
+            <div class="input-group">
+                <label>TELÉFONO</label>
+                <input type="tel" placeholder="Tu número">
+            </div>
+
+            <button type="submit" class="save-btn">GUARDAR CAMBIOS</button>
+        </form>
+    </div>
+
+    <!-- Modal de foto de perfil -->
+    <div class="modal-overlay" id="photoEditModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closePhotoModal()">&times;</span>
+            <p style="font-weight: bold;">ELEGIR FOTO DE PERFIL</p>
+            <div class="photo-grid">
+                <div class="profile-option" data-photo-src="{{ url_for('static', filename='img/a.jpg') }}" onclick="selectPhoto(this)">
+                    <img src="{{ url_for('static', filename='img/a.jpg') }}">
+                </div>
+                <div class="profile-option" data-photo-src="{{ url_for('static', filename='img/b.jpg') }}" onclick="selectPhoto(this)">
+                    <img src="{{ url_for('static', filename='img/b.jpg') }}">
+                </div>
+                <div class="profile-option" data-photo-src="{{ url_for('static', filename='img/c.jpg') }}" onclick="selectPhoto(this)">
+                    <img src="{{ url_for('static', filename='img/c.jpg') }}">
+                </div>
+            </div>
+            <button class="save-btn" onclick="applyPhotoChange()">ACEPTAR</button>
+        </div>
+    </div>
+
+    <!-- Modal de notificaciones -->
+    <div class="modal-overlay" id="notificationModal">
+        <div class="notification-content">
+            <span class="close-notif" onclick="closeNotificationModal()">&times;</span>
+            <div class="notif-icon">
+                <i class="fa-solid fa-bell-slash"></i>
+            </div>
+            <h3>NOTIFICACIONES</h3>
+            <p>No tienes notificaciones pendientes por el momento.</p>
+            <button class="notif-btn" onclick="closeNotificationModal()">ENTENDIDO</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/perfil.js') }}"></script>
+</body>
+</html>

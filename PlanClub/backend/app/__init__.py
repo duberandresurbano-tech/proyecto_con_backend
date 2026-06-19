@@ -1,25 +1,25 @@
 import os
 from flask import Flask
 from app.models import db
+from app.config import config_map
+
 
 def create_app():
-    # Crea la instancia principal de la aplicación Flask
-    app = Flask(__name__, instance_relative_config=True)
-    
-    # Configuración de la base de datos SQLite local
-    # Se guardará automáticamente dentro de la carpeta 'instance'
-    app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(app.instance_path, 'planclub.db')}"
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SECRET_KEY'] = 'tu_llave_secreta_para_los_tokens_del_bar'
+    app = Flask(__name__)
 
-    # Inicializa la base de datos con la configuración de la app
+    # Selecciona el entorno según la variable de entorno FLASK_ENV
+    # Si no está definida, usa 'development' por defecto
+    entorno = os.environ.get('FLASK_ENV', 'development')
+    app.config.from_object(config_map.get(entorno, config_map['default']))
+
+    # Inicializar la extensión de base de datos con la app
     db.init_app(app)
 
-    # Registra las rutas del backend (las manejaremos en routes.py)
+    # Registrar el blueprint principal con todas las rutas
     from app.routes import bp as main_bp
     app.register_blueprint(main_bp)
 
-    # Bloque mágico: Crea el archivo .db con todas tus tablas si no existe
+    # Crear todas las tablas si no existen (útil en desarrollo)
     with app.app_context():
         db.create_all()
 

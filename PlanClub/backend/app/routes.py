@@ -1,17 +1,39 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, render_template
 from app.models import db, Usuario
 
 bp = Blueprint('main', __name__)
 
+# 1. RUTA RAÍZ: Renderiza index.html (pantalla de Login/Registro)
 @bp.route('/')
 def index():
-    return jsonify({"mensaje": "Servidor de PlanClub corriendo perfectamente"}), 200
+    return render_template('html/index.html')
 
-# RUTA DE PRUEBA: Para meter el primer usuario a la base de datos
+# 2. RUTAS DE NAVEGACIÓN
+@bp.route('/inicio')
+def inicio():
+    return render_template('html/inicio.html')
+
+@bp.route('/catalogo')
+def catalogo():
+    return render_template('html/catalogo.html')
+
+@bp.route('/chat')
+def chat():
+    return render_template('html/chat.html')
+
+@bp.route('/perfil')
+def perfil():
+    return render_template('html/perfil.html')
+
+@bp.route('/reserva')
+def reserva():
+    return render_template('html/reserva.html')
+
+
+# 3. RUTA DE PRUEBA: Crear usuario en la DB
 @bp.route('/crear-usuario-prueba', methods=['GET'])
 def crear_usuario():
     try:
-        # Creamos un registro con la estructura de tu modelo
         nuevo_usuario = Usuario(
             id_usuario="101010",
             nombre="Juan",
@@ -21,11 +43,8 @@ def crear_usuario():
             estado="activo",
             verificacion="completada"
         )
-        
-        # Le decimos a la base de datos que guarde el registro
         db.session.add(nuevo_usuario)
         db.session.commit()
-        
         return jsonify({"mensaje": "¡Primer usuario guardado con éxito en SQLite!"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500

@@ -32,7 +32,7 @@ body {
     justify-content: flex-start; 
     align-items: center;
     text-align: center;
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url("../IMG/fondo.png");
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url("../img/fondo.png");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

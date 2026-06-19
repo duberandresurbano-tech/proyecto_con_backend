@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlanClub - Premium Experience</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reserva.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    
+    <div class="watermark-bg">PLANCLUB</div>
+
+    <div class="settings-container">
+        <button class="btn-settings" onclick="toggleSettings()">
+            <div class="barras-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </button>
+        <div id="settings-menu" class="settings-menu">
+            <button onclick="window.location.href='{{ url_for('main.perfil') }}'">👤 Ver mi Perfil</button>
+            <button onclick="window.location.href='{{ url_for('main.catalogo') }}'">📋 Ver Catálogo</button>
+            <button onclick="window.location.href='{{ url_for('main.chat') }}'">💬 Ir al Chat</button>
+            <button onclick="window.location.href='{{ url_for('main.index') }}'" style="color: #ff6b6b;">🚪 Cerrar Sesión</button>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <div id="view-home" class="view">
+            <header>
+                <div class="logo">PLANCLUB</div>
+                <p style="color:#666; letter-spacing:4px; margin-top: -15px; font-size: 0.8rem; font-weight: bold;">EXCLUSIVE ACCESS</p>
+            </header>
+            
+            <div class="menu-list">
+                <button class="menu-btn" onclick="cambiarVista('view-form')"><span>✨ Nueva Reserva</span><span>→</span></button>
+                <button class="menu-btn" onclick="cambiarVista('view-list')"><span>📅 Mis Reservas</span><span>→</span></button>
+                <button class="menu-btn" onclick="window.location.href='{{ url_for('main.inicio') }}'"><span>🏠 Volver al Inicio</span><span>→</span></button>
+            </div>
+        </div>
+
+        <div id="view-form" class="view">
+            <button class="btn-back" onclick="cambiarVista('view-home')">← Volver al Inicio</button>
+            <div class="card">
+                <h3 style="margin-bottom: 15px; color: var(--champagne-main);">Tus Datos de Reserva</h3>
+                
+                <p style="font-size: 0.9rem; color: #aaa; margin-bottom: 8px;">Selecciona la fecha (Día, Mes, Año):</p>
+                <input type="text" id="input-fecha" placeholder="DD/MM/YYYY" maxlength="10" oninput="mascaraFecha(this)">
+                
+                <p style="font-size: 0.9rem; color: #aaa; margin-bottom: 8px; margin-top: 15px;">Cantidad de personas (Máx. 10):</p>
+                <input type="number" id="personas" placeholder="¿Cuántos asisten?" min="1" max="10">
+                
+                <button class="btn-action btn-transparent" onclick="procesarPasoFecha()">Continuar Reservación</button>
+            </div>
+        </div>
+
+        <div id="view-map" class="view">
+            <button class="btn-back" onclick="cambiarVista('view-form')">← Editar Datos</button>
+            <div style="text-align:center; margin-bottom: 10px;">
+                <small style="color: #888;">Distribución Real de la Pista (Máx. 4 mesas por reserva)</small>
+            </div>
+            
+            <div class="plano-arquitectonico">
+                <div id="mapa-discoteca">
+                    <div class="dj-set-fixed">🎧 STAGE / DJ SET</div>
+                    <div class="pista-baile">DANCE FLOOR</div>
+                </div>
+            </div>
+            
+            <div id="map-info" class="card" style="display:none;text-align:center; margin-top: 15px;">
+                <p id="txt-mesas" style="color:var(--neon-cyan);font-weight:bold;"></p>
+                <h2 id="txt-total" style="margin: 10px 0;"></h2>
+                <button class="btn-action" onclick="cambiarVista('view-pago')">Proceder al Pago</button>
+            </div>
+        </div>
+
+        <div id="view-pago" class="view">
+            <button class="btn-back" onclick="cambiarVista('view-map')">← Cambiar Mesas</button>
+            <div class="card">
+                <h2 style="color:var(--neon-purple);text-align:center; margin-bottom: 15px;">Finalizar Compra</h2>
+                <p style="margin-bottom: 10px;">Método de pago:</p>
+                <div class="metodo-pago active" onclick="selectPay(this, 'tarjeta')"><input type="radio" name="pay" checked> 💳 Tarjeta / Débito</div>
+                <div class="metodo-pago" onclick="selectPay(this, 'virtual')"><input type="radio" name="pay"> 📱 Nequi / Daviplata</div>
+                <button class="btn-action" style="background:var(--neon-cyan);color:black;margin-top:20px;" onclick="confirmarReservaFinal()">CONFIRMAR Y PAGAR</button>
+            </div>
+        </div>
+
+        <div id="view-list" class="view">
+            <button class="btn-back" onclick="cambiarVista('view-home')">← Menú Principal</button>
+            <div id="reserva-container"></div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/reserva.js') }}"></script>
+</body>
+</html>

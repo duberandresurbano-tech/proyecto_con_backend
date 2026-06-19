@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Bar Gold - Ultra Premium Edition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/catalogo.css') }}">
+</head>
+
+<body>
+
+    <video class="video-bg-global" autoplay muted loop playsinline>
+        <source src="https://pixabay.com/es/videos/download/x-33628_medium.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <div class="phone-glow-wrapper">
+        <div class="phone-container">
+            
+            <header id="app-header">
+                <button class="top-left-btn" id="btnAccionSuperior" onclick="manejadorBotonSuperior()">
+                    <img src="{{ url_for('static', filename='img/logo.png') }}" id="logoSuperior" alt="Logo">
+                    <span class="home-icon" id="casaSuperior">🏠</span>
+                    <span class="arrow" id="flechaSuperior">←</span>
+                </button>
+                <button class="header-title-btn" id="header-title" onclick="filtrarCategoria('bebidas')">Catálogo</button>
+            </header>
+
+            <div id="overlay">
+                <div class="modal-card" id="modal-confirmacion">
+                    <h2>¿Confirmar pedido?</h2>
+                    <p>Tu orden será procesada de inmediato.</p>
+                    <div class="modal-flex-btns">
+                        <button class="modal-btn yes" onclick="procesarPedido()">SÍ, PEDIR</button>
+                        <button class="modal-btn no" onclick="regresar()">CANCELAR</button>
+                    </div>
+                </div>
+                
+                <div class="modal-card" id="modal-gracias" style="display:none;">
+                    <img src="{{ url_for('static', filename='img/logo.png') }}" class="success-logo" alt="Logo Bar Gold">
+                    <h2>¡GRACIAS POR TU PEDIDO!</h2>
+                    <p>En breve estaremos contigo en tu mesa.</p>
+                    <button class="modal-btn" onclick="reiniciarApp()" style="background: linear-gradient(135deg, #ffd700 0%, #b89700 100%); color:#0f0f12; width: 100%;">NUEVO PEDIDO</button>
+                </div>
+            </div>
+
+            <div id="toast-notificacion" class="toast">¡Producto agregado! 🥂</div>
+
+            <div class="content-scroll" id="catalogo-screen">
+                <div class="category-menu" id="category-bar">
+                    <button class="category-btn active" id="btn-bebidas" onclick="filtrarCategoria('bebidas')">Bebidas</button>
+                    <button class="category-btn" id="btn-promociones" onclick="filtrarCategoria('promociones')">Promociones %</button>
+                    <button class="category-btn" id="btn-combos" onclick="filtrarCategoria('combos')">Combos 🍻</button>
+                </div>
+
+                <div id="contenedor-productos-dinamicos"></div>
+            </div>
+
+            <div class="content-scroll" id="pedido" style="display: none; opacity: 0; transform: scale(0.95);">
+                <div id="listaPedido"></div>
+                
+                <div class="total-container">
+                    <span class="total-label">Total a pagar</span>
+                    <span class="total-amount">$<span id="total">0</span></span>
+                </div>
+                
+                <div class="cart-actions-box">
+                    <button class="btn-action clear" onclick="vaciarCarrito(event)">VACIAR</button>
+                    <button class="btn-action confirm" onclick="abrirConfirmacion()">CONFIRMAR</button>
+                </div>
+            </div>
+
+            <div class="nav-bottom" id="main-nav">
+                <button class="nav-btn" onclick="verPedido()">
+                    Ver Mi Orden <span class="badge" id="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/catalogo.js') }}"></script>
+</body>
+</html>

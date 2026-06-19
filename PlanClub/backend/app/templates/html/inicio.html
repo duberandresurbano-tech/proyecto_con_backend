@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlanClub</title>
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#000000">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/inicio.css') }}">
+</head>
+<body>
+ 
+    <div class="background"></div>
+ 
+    <div class="container">
+
+        <div class="logo-container">
+            <h1 class="logo">
+                PlanClub
+                <span>BAR</span>
+            </h1>
+        </div>
+
+        <div class="menu-list">
+            <a href="{{ url_for('main.perfil') }}"   class="btn">✨ Perfil</a>
+            <a href="{{ url_for('main.chat') }}"     class="btn">💬 Chat</a>
+            <a href="{{ url_for('main.reserva') }}"  class="btn">📅 Hacer Reserva</a>
+            <a href="{{ url_for('main.catalogo') }}" class="btn">🏠 Catálogo</a>
+            <a href="{{ url_for('main.index') }}"    class="btn">🚪 Cerrar Sesión</a>
+        </div>
+
+    </div>
+ 
+    <script src="{{ url_for('static', filename='js/inicio.js') }}"></script>
+    
+</body>
+</html>

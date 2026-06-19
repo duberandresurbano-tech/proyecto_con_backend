@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlanClub - Premium Experience</title>
+
+    <style>
+      #splash {
+        position: fixed; 
+        inset: 0;
+        background: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease;  
+      }
+      #splash.fade-out {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      #splash .gooey-wrap {
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        filter: url("#gooey");
+      }
+
+      #splash .dot {
+        position: absolute;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 35%, #f0c040, #b8860b);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transition: top 1s cubic-bezier(.7,0,.3,1),
+                    left 1s cubic-bezier(.7,0,.3,1),
+                    width 1s ease, height 1s ease,
+                    opacity 0.6s ease;
+      }
+
+      #splash .logo-reveal {
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        object-fit: contain;
+        opacity: 0;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.85);
+        transition: opacity 0.8s ease,
+                    transform 0.8s ease,
+                    top 0.9s cubic-bezier(.4,0,.2,1),
+                    left 0.9s cubic-bezier(.4,0,.2,1);
+      }
+
+      #splash .logo-reveal.show {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      #splash .logo-reveal.fly-up {
+        top: 130px;
+        left: 50%;
+        transform: translate(-50%, 0) scale(1);
+        opacity: 1;
+      }
+    </style>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+
+<body>
+
+  <div id="splash">
+      <svg width="0" height="0" style="position:absolute">
+        <filter id="gooey">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="10" />
+          <feColorMatrix values="
+            1 0 0 0 0
+            0 1 0 0 0
+            0 0 1 0 0
+            0 0 0 22 -11" />
+        </filter>
+      </svg>
+
+      <div class="gooey-wrap" id="gooeyWrap">
+        <div class="dot" id="d1"></div>
+        <div class="dot" id="d2"></div>
+        <div class="dot" id="d3"></div>
+        <div class="dot" id="d4"></div>
+        <div class="dot" id="d5"></div>
+        <div class="dot" id="d6"></div>
+      </div>
+
+      <img class="logo-reveal" id="logoReveal" src="{{ url_for('static', filename='img/logo.png') }}" alt="PlanClub">
+  </div>
+
+  <div class="secret-trigger" onclick="abrirAdmin()"></div>
+
+    <div class="logo-container">
+        <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" class="logo-image">
+        <div class="logo">PLANCLUB</div>
+    </div>
+
+    <div class="view active">
+        <button class="btn" onclick="showPanel('loginPanel')">INICIAR SESIÓN</button>
+        <br>
+        <button class="btn" onclick="showPanel('registerPanel')">REGISTRARSE</button>
+    </div>
+
+    <div class="panel" id="loginPanel">
+        <h2 style="margin-bottom: 20px; color: var(--champagne-main)">BIENVENIDO</h2>
+        <div class="input-group"><input type="text" id="loginUser" placeholder="Usuario"></div>
+        <div class="input-group">
+            <div style="position: relative;">
+                <input type="password" id="loginPass" placeholder="Contraseña" style="padding-right:40px;">
+                <span onclick="togglePassword('loginPass', this)" 
+                      style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">🐵</span>
+            </div>
+        </div>
+        <button class="btn" onclick="validarLogin()">ENTRAR</button>
+        <p style="margin-top:10px; color:#aaa; cursor:pointer;" onclick="showPanel('recoverPanel')">¿Olvidaste tu contraseña?</p>    
+        <div id="loginMsg" class="msg"></div>
+        <div class="close" onclick="hidePanels()">VOLVER</div>
+    </div>
+
+    <div class="panel" id="registerPanel">
+        <h2 style="margin-bottom: 20px; color: var(--champagne-main)">NUEVA CUENTA</h2>
+        <div class="input-group"><input type="text" id="regUser" placeholder="Crea un Usuario"></div>
+        <div class="input-group">
+            <div style="position: relative;">
+                <input type="password" id="regPass" placeholder="Crea una Contraseña" style="padding-right:40px;">
+                <span onclick="togglePassword('regPass', this)" 
+                      style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">🙈</span>
+            </div>
+        </div>
+        <p class="password-hint">La contraseña debe tener al menos 8 caracteres, una letra mayúscula y un número.</p>
+        <button class="btn" onclick="guardarRegistro()">REGISTRARME</button>
+        <div id="regMsg" class="msg"></div>
+        <div class="close" onclick="hidePanels()">CANCELAR</div>
+    </div>
+
+    <div class="panel" id="adminPanel">
+        <h2 style="color: var(--champagne-main)">ADMIN CONTROL</h2>
+        <div class="admin-list">
+            <p style="font-size: 12px; color: #888">Usuario actual en memoria:</p>
+            <p id="currentUserDisplay" style="margin: 10px 0; font-weight: bold; color: var(--neon-cyan)">Ninguno</p>
+            <button class="btn" style="width: 100%; background: #ff4d4d; color: white; padding: 10px;" onclick="borrarTodo()">BORRAR MEMORIA</button>
+        </div>
+        <div class="close" onclick="hidePanels()">CERRAR GESTOR</div>
+    </div>
+
+    <div class="panel" id="recoverPanel">
+        <h2 style="margin-bottom: 20px; color: var(--champagne-main)">RECUPERAR CONTRASEÑA</h2>
+        <div class="input-group"><input type="text" id="recoverUser" placeholder="Ingresa tu usuario"></div>
+        <div class="input-group"><input type="password" id="newPass" placeholder="Nueva contraseña"></div>
+        <button class="btn" onclick="recuperarPass()">CAMBIAR CONTRASEÑA</button>
+        <div id="recoverMsg" class="msg"></div>
+        <div class="close" onclick="hidePanels()">VOLVER</div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+    <script>
+    (function () {
+      const orbits = [
+        { top: '15%', left: '50%' },
+        { top: '32%', left: '80%' },
+        { top: '68%', left: '80%' },
+        { top: '85%', left: '50%' },
+        { top: '68%', left: '20%' },
+        { top: '32%', left: '20%' }
+      ];
+
+      const dots = [
+        document.getElementById('d1'),
+        document.getElementById('d2'),
+        document.getElementById('d3'),
+        document.getElementById('d4'),
+        document.getElementById('d5'),
+        document.getElementById('d6'),
+      ];
+
+      const logoReveal = document.getElementById('logoReveal');
+      const logoReal   = document.querySelector('.logo-container');
+
+      if (logoReal) logoReal.style.visibility = 'hidden';
+
+      requestAnimationFrame(() => {
+        dots.forEach((dot, i) => {
+          dot.style.top  = orbits[i].top;
+          dot.style.left = orbits[i].left;
+        });
+      });
+
+      setTimeout(() => {
+        dots.forEach(dot => {
+          dot.style.top    = '50%';
+          dot.style.left   = '50%';
+          dot.style.width  = '40px';
+          dot.style.height = '40px';
+        });
+      }, 1500);
+
+      setTimeout(() => {
+        dots.forEach(dot => { 
+          dot.style.transform = 'translate(-50%, -50%) scale(0)';
+          dot.style.opacity = '0'; 
+        });
+        if(logoReveal) logoReveal.classList.add('show');
+      }, 2500);
+
+      setTimeout(() => {
+        if(logoReveal) {
+            logoReveal.classList.remove('show');
+            logoReveal.classList.add('fly-up');
+        }
+      }, 3400);
+
+      setTimeout(() => {
+        const splash = document.getElementById('splash');
+        if (splash) {
+          splash.classList.add('fade-out');
+          setTimeout(() => {
+            if (logoReal) logoReal.style.visibility = 'visible';
+            splash.remove();
+          }, 400);
+        }
+      }, 4200);
+
+    })();
+    </script>
+</body>
+</html>
