@@ -30,6 +30,8 @@ def create_app():
     # ── Panel de administración ──────────────────────────────────────────────
     admin = Admin(app, name='PLANCLUB ADMIN', url='/admin')
 
+    from app.admin_views import VistaProtegidaAdmin, UsuarioAdminView
+
     admin.add_view(UsuarioAdminView(Usuario,  db.session, name="Usuarios"))
     admin.add_view(VistaProtegidaAdmin(Rol,      db.session, name="Roles"))
     admin.add_view(VistaProtegidaAdmin(Permisos, db.session, name="Permisos"))

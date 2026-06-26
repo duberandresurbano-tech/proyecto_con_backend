@@ -63,7 +63,7 @@ class PermisosRol(db.Model):
 class Usuario(db.Model, UserMixin):
     __tablename__ = 'usuario'
 
-    id_usuario       = db.Column(db.String(20), primary_key=True)
+    id_usuario       = db.Column(db.String(20), primary_key=True, default=lambda: generar_id('U'))
     nombre           = db.Column(db.String(50), nullable=False)
     apellido         = db.Column(db.String(50), nullable=False)
     correo           = db.Column(db.String(100), nullable=False, unique=True)
@@ -71,14 +71,12 @@ class Usuario(db.Model, UserMixin):
     fecha_nacimiento = db.Column(db.Date, nullable=False)
     contrasena       = db.Column(db.String(255), nullable=False)
     estado           = db.Column(db.String(20), nullable=False, default='Activa')
-    
-    # 1. Tu llave foránea mapeada a la tabla rol
     id_rol           = db.Column(db.String(20), db.ForeignKey('rol.id_rol'), nullable=False)
 
-    # 🌟 OJO AQUÍ: Asegúrate de que esta línea esté idéntica y bien indentada
+    # Relación explícita para que Flask-Admin enlace el combo desplegable
     rol = db.relationship('Rol', foreign_keys=[id_rol], backref='usuarios')
 
-    # El método que agregamos para Flask-Login
+    # Solución al error de Flask-Login con llaves primarias personalizadas
     def get_id(self):
         return str(self.id_usuario)
 

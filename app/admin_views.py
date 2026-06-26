@@ -109,3 +109,23 @@ class UsuarioAdminView(VistaProtegidaAdmin):
         else:
             if is_created:
                 model.id_rol = 'R1'
+# 🌟 SOLO AGREGAMOS ESTA CLASE AL FINAL DEL ARCHIVO PARA LA TABLA USUARIOS:
+class UsuarioAdminView(VistaProtegidaAdmin):
+    """
+    Hereda todo lo que ya programaste arriba, pero le da superpoderes 
+    al formulario de usuarios para mapear el Rol y ocultar al Supremo.
+    """
+    form_columns = ['nombre', 'apellido', 'correo', 'celular', 'fecha_nacimiento', 'contrasena', 'estado', 'rol']
+
+    def get_query(self):
+        # 🛡️ Oculta al admin supremo de la lista para que nadie lo toque
+        query = super(UsuarioAdminView, self).get_query()
+        
+        if current_user.is_authenticated and current_user.correo != 'admin@planclub.com':
+            return query.filter(self.model.correo != 'admin@planclub.com')
+
+    def on_model_change(self, form, model, is_created):
+        if is_created and not model.estado:
+            model.estado = 'Activa'
+        if hasattr(form, 'rol') and form.rol.data:
+            model.id_rol = form.rol.data.id_rol
