@@ -9,13 +9,7 @@ let metodoPagoSeleccionado = "tarjeta"; // Por defecto
  * Si no existe un historial en el navegador, creamos uno con datos de prueba.
  */
 if (!localStorage.getItem('historial_reservas')) {
-    const datosInicialesDePrueba = [
-        { fecha: "16/06/2026", mesas: [3, 4], personas: 3, total: "$40.000 COP" },
-        { fecha: "17/06/2026", mesas: [7, 8, 9], personas: 6, total: "$60.000 COP" }
-    ];
-    localStorage.setItem('historial_reservas', JSON.stringify(datosInicialesDePrueba));
 }
-
 /**
  * MÁSCARA AUTOMÁTICA PARA EL FORMATO DD/MM/YYYY
  */

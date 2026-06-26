@@ -8,7 +8,6 @@
     --champagne-dark: #b89b5e;
     --gold-gradient: linear-gradient(45deg, #c8a74d, #f5d76e);
     
-    /* Variables de cristal transparente */
     --crystal-clear: rgba(255, 255, 255, 0.02);
     --crystal-hover: rgba(255, 255, 255, 0.12);
     --crystal-border: rgba(255, 255, 255, 0.3);
@@ -22,7 +21,7 @@
 }
 
 /* ============================================================
-   2. CUERPO (Fondo y Estética)
+   2. CUERPO
    ============================================================ */
 body {
     margin: 0;
@@ -42,7 +41,7 @@ body {
 }
 
 /* ============================================================
-   3. LOGO Y SUBTITULO (PlanClub + BAR Gigante y Equilibrado)
+   3. LOGO
    ============================================================ */
 .logo {
     font-size: 4.5rem; 
@@ -64,7 +63,6 @@ body {
     filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.25)); 
     transition: background-position 0.6s ease, filter 0.4s ease;
 
-    /* 🔥 MANTENIDO: Animación elástica de entrada para el Name */
     animation: entradaSuaveLogo 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
@@ -85,7 +83,6 @@ body {
     filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
 }
 
-/* Contenedor que agrupa tus enlaces */
 .menu-list {
     display: flex;
     flex-direction: column;
@@ -94,7 +91,7 @@ body {
 }
 
 /* ============================================================
-   4. BOTONES (Cristal Transparente + Escalado Fluido Completo)
+   4. BOTONES
    ============================================================ */
 .btn {
     display: flex;
@@ -113,7 +110,6 @@ body {
     color: #ffffff;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 
-    /* Cristal Transparente */
     background: var(--crystal-clear);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
@@ -121,24 +117,34 @@ body {
     box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.25),
                 0 4px 15px rgba(0, 0, 0, 0.2);
 
-    /* 🛠️ ULTRA FLUIDO: Transición limpia de 0.3s idéntica a tu login en todas las propiedades */
     transition: all 0.3s ease-in-out;
 
-    /* Animación de entrada en cascada modificada (Solo maneja opacidad para no trabar el tamaño) */
     animation: entradaCascadaLimpia 0.5s ease-out forwards;
     opacity: 0; 
 }
 
-/* Tiempos de retraso en cascada para tus 5 enlaces (Mantenidos) */
-.btn:nth-child(1) { animation-delay: 0.3s; }
+/* Delays en cascada — extendido a 6 botones */
+.btn:nth-child(1) { animation-delay: 0.30s; }
 .btn:nth-child(2) { animation-delay: 0.45s; }
-.btn:nth-child(3) { animation-delay: 0.6s; }
+.btn:nth-child(3) { animation-delay: 0.60s; }
 .btn:nth-child(4) { animation-delay: 0.75s; }
-.btn:nth-child(5) { animation-delay: 0.9s; }
+.btn:nth-child(5) { animation-delay: 0.90s; }
+.btn:nth-child(6) { animation-delay: 1.05s; }
 
-/* El efecto hover ahora responde y regresa con total fluidez */
+/* Asegura el delay del botón de administración sin importar el orden en que renderice */
+.btn-danger {
+    animation-delay: 1.05s !important;
+    border-color: rgba(255, 75, 75, 0.4) !important;
+}
+
+.btn-danger:hover {
+    background: rgba(255, 0, 0, 0.2) !important;
+    border-color: rgba(255, 99, 71, 0.7) !important;
+    box-shadow: 0 0 25px rgba(255, 50, 50, 0.3) !important;
+}
+
 .btn:hover {
-    transform: scale(1.05); /* Se agranda de forma sutil y limpia */
+    transform: scale(1.05);
     background: var(--crystal-hover); 
     border-color: rgba(255, 255, 255, 0.6);
     box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.4),
@@ -150,25 +156,13 @@ body {
 }
 
 /* ============================================================
-   5. KEYFRAMES MODIFICADOS (Para liberar el escalado)
+   5. KEYFRAMES
    ============================================================ */
-
-/* 🛠️ NUEVO: Esta animación solo maneja la opacidad en cascada, 
-   dejando el tamaño libre para que el hover funcione perfecto */
 @keyframes entradaCascadaLimpia {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
 }
 
-/* ============================================================
-   5. KEYFRAMES (Las físicas de escala automáticas)
-   ============================================================ */
-
-/* El Name aparece escalando desde el fondo con un rebote elástico premium */
 @keyframes entradaSuaveLogo {
     0% {
         opacity: 0;
@@ -183,7 +177,6 @@ body {
     }
 }
 
-/* Los botones se inflan desde el centro hacia afuera en fila */
 @keyframes popEntradaBotones {
     0% {
         opacity: 0;
@@ -195,7 +188,6 @@ body {
     }
 }
 
-/* Ajuste automático para celulares */
 @media (max-width: 400px) {
     .logo {
         font-size: 3.5rem;

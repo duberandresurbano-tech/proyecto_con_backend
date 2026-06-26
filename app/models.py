@@ -1,5 +1,12 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import secrets # 👈 IMPORTACIÓN NUEVA: Al inicio del archivo para generar números seguros
+from flask_login import UserMixin # 👈 IMPORTA ESTO
+
+def generar_id(prefijo):
+    """Genera un ID automático corto, ej: U_A7B3E2"""
+    # Genera un token aleatorio de 3 bytes en hexadecimal (6 caracteres)
+    return f"{prefijo}_{secrets.token_hex(3).upper()}"
 
 db = SQLAlchemy()
 
@@ -16,6 +23,10 @@ class Rol(db.Model):
         'UsuarioRol', backref='rol_perfil',
         lazy=True, cascade="all, delete-orphan"
     )
+
+    # 🌟 AGREGA ESTO AQUÍ: Le dice a Flask-Admin qué texto mostrar en los desplegables
+    def __str__(self):
+        return self.nombre  # Mostrará "Cliente", "Vendedor", o "Administrador"
 
 
 # ==========================================
@@ -49,18 +60,27 @@ class PermisosRol(db.Model):
 # ==========================================
 # 4. TABLA: USUARIO
 # ==========================================
-class Usuario(db.Model):
+class Usuario(db.Model, UserMixin):
     __tablename__ = 'usuario'
 
-    id_usuario       = db.Column(db.String(20), primary_key=True) # Ej: 'U001'
+    id_usuario       = db.Column(db.String(20), primary_key=True)
     nombre           = db.Column(db.String(50), nullable=False)
     apellido         = db.Column(db.String(50), nullable=False)
-    correo           = db.Column(db.String(100), nullable=False, unique=True) # <-- Tu llave única de acceso
-    celular          = db.Column(db.String(20), nullable=False) # Útil para contacto de reservas
-    fecha_nacimiento = db.Column(db.Date, nullable=False) # <-- Para cumplir la regla U1 en el backend
+    correo           = db.Column(db.String(100), nullable=False, unique=True)
+    celular          = db.Column(db.String(20), nullable=False)
+    fecha_nacimiento = db.Column(db.Date, nullable=False)
     contrasena       = db.Column(db.String(255), nullable=False)
     estado           = db.Column(db.String(20), nullable=False, default='Activa')
+    
+    # 1. Tu llave foránea mapeada a la tabla rol
     id_rol           = db.Column(db.String(20), db.ForeignKey('rol.id_rol'), nullable=False)
+
+    # 🌟 OJO AQUÍ: Asegúrate de que esta línea esté idéntica y bien indentada
+    rol = db.relationship('Rol', foreign_keys=[id_rol], backref='usuarios')
+
+    # El método que agregamos para Flask-Login
+    def get_id(self):
+        return str(self.id_usuario)
 
     # Relaciones
     telefonos        = db.relationship('Telefono',   backref='dueno',              lazy=True, cascade="all, delete-orphan")
@@ -124,7 +144,7 @@ class Telefono(db.Model):
 class Mesa(db.Model):
     __tablename__ = 'mesa'
 
-    id_mesa   = db.Column(db.String(20),  primary_key=True)
+    id_mesa   = db.Column(db.String(20),  primary_key=True, default=lambda: generar_id('M'))
     numero    = db.Column(db.Integer,     nullable=False, unique=True)
     capacidad = db.Column(db.Integer,     nullable=False)
     zona      = db.Column(db.String(20),  nullable=False)
@@ -154,8 +174,8 @@ class Reserva(db.Model):
 class Producto(db.Model):
     __tablename__ = 'producto'
 
-    id_producto     = db.Column(db.String(20), primary_key=True)
-    nombre          = db.Column(db.String(100), nullable=False) # Ampliado para nombres de platos/bebidas extensos
+    id_producto     = db.Column(db.String(20), primary_key=True, default=lambda: generar_id('P'))
+    nombre          = db.Column(db.String(100), nullable=False)
     precio          = db.Column(db.Float,      nullable=False) # Cambiado a Float para soportar cálculos complejos
     categoria       = db.Column(db.String(30), nullable=False)
     cantidad_actual = db.Column(db.Integer,    nullable=False, default=0)
