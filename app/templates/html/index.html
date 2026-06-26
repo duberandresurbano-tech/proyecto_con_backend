@@ -115,12 +115,12 @@
 
     <div class="panel" id="loginPanel">
         <h2 style="margin-bottom: 20px; color: var(--champagne-main)">BIENVENIDO</h2>
-        <div class="input-group"><input type="text" id="loginUser" placeholder="Usuario" onkeydown="if(event.key==='Enter') validarLogin()"></div>
+        <div class="input-group"><input type="email" id="loginUser" placeholder="Correo electrónico" onkeydown="if(event.key==='Enter') validarLogin()"></div>
         <div class="input-group">
             <div style="position: relative;">
                 <input type="password" id="loginPass" placeholder="Contraseña" style="padding-right:40px;" onkeydown="if(event.key==='Enter') validarLogin()">
                 <span onclick="togglePassword('loginPass', this)" 
-                      style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">🐵</span>
+                      style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">🙈</span>
             </div>
         </div>
         <button class="btn" onclick="validarLogin()">ENTRAR</button>
@@ -131,7 +131,8 @@
 
     <div class="panel" id="registerPanel">
         <h2 style="margin-bottom: 20px; color: var(--champagne-main)">NUEVA CUENTA</h2>
-        <div class="input-group"><input type="text" id="regUser" placeholder="Crea un Usuario" onkeydown="if(event.key==='Enter') guardarRegistro()"></div>
+        <div class="input-group"><input type="text" id="regNombre" placeholder="Nombre" onkeydown="if(event.key==='Enter') guardarRegistro()"></div>
+        <div class="input-group"><input type="text" id="regApellido" placeholder="Apellido" onkeydown="if(event.key==='Enter') guardarRegistro()"></div>
         <div class="input-group">
             <div style="position: relative;">
                 <input type="password" id="regPass" placeholder="Crea una Contraseña" style="padding-right:40px;" onkeydown="if(event.key==='Enter') guardarRegistro()">

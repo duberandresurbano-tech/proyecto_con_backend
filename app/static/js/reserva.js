@@ -203,8 +203,14 @@ function validarFecha(fechaInput) {
  * ACCIÓN DEL BOTÓN CONTINUAR RESERVACIÓN
  */
 function procesarPasoFecha() {
-    const inputFecha = document.getElementById('input-fecha').value;
+    let inputFecha = document.getElementById('input-fecha').value;
     const inputPersonas = document.getElementById('personas').value;
+
+    // Convertir formato de date input (YYYY-MM-DD) a DD/MM/YYYY
+    if (inputFecha && inputFecha.includes('-')) {
+        const [anio, mes, dia] = inputFecha.split('-');
+        inputFecha = `${dia}/${mes}/${anio}`;
+    }
 
     const validacionFecha = validarFecha(inputFecha);
     if (!validacionFecha.valido) {
@@ -282,20 +288,37 @@ function renderizarMisReservas() {
     contenedor.innerHTML = ""; 
     const historial = JSON.parse(localStorage.getItem('historial_reservas')) || [];
 
-    // --- BOTÓN DE PÁNICO ---
+    // --- BOTÓN PARA BORRAR TODO ---
     const btnReset = document.createElement('button');
-    btnReset.innerText = "Borrar Todo";
-    btnReset.style.position = "fixed";
-    btnReset.style.bottom = "20px";
-    btnReset.style.right = "20px";
-    btnReset.style.zIndex = "999999"; 
-    btnReset.style.padding = "10px";
-    btnReset.style.opacity = "0.15";
-    btnReset.style.cursor = "pointer";
-    btnReset.style.transition = "opacity 0.3s";
-
-    btnReset.onmouseover = () => { btnReset.style.opacity = "1"; };
-    btnReset.onmouseout = () => { btnReset.style.opacity = "0.15"; };
+    btnReset.innerText = "🗑️ BORRAR TODAS";
+    btnReset.className = "btn-delete-all";
+    btnReset.style.cssText = `
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 999999;
+        padding: 12px 18px;
+        background: linear-gradient(135deg, #ff3c3c 0%, #ff6b5b 100%);
+        color: #ffffff;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 60, 60, 0.3);
+        letter-spacing: 0.5px;
+    `;
+    
+    btnReset.onmouseover = () => {
+        btnReset.style.boxShadow = "0 6px 25px rgba(255, 60, 60, 0.6)";
+        btnReset.style.transform = "translateY(-2px)";
+    };
+    
+    btnReset.onmouseout = () => {
+        btnReset.style.boxShadow = "0 4px 15px rgba(255, 60, 60, 0.3)";
+        btnReset.style.transform = "translateY(0)";
+    };
     
     btnReset.onclick = function(e) {
         e.preventDefault();
@@ -309,7 +332,7 @@ function renderizarMisReservas() {
         }
     };
     document.body.appendChild(btnReset);
-    // --------------------------------------
+    // ------------------------------------
 
     if (historial.length === 0) {
         contenedor.innerHTML = `<p style="text-align:center; color:#888; padding:20px;">No tienes reservas registradas.</p>`;

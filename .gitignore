@@ -1,0 +1,102 @@
+# ============================================================
+# PLANCLUB — .gitignore
+# Ubicar este archivo en la raíz del proyecto (junto a README.md)
+# ============================================================
+
+
+# ============================================================
+# 1. VARIABLES DE ENTORNO Y CLAVES SECRETAS  ← LO MÁS IMPORTANTE
+# ============================================================
+.env
+.env.*
+.env.local
+.env.production
+*.secret
+secrets.json
+
+
+# ============================================================
+# 2. BASE DE DATOS  ← NUNCA subir datos reales
+# ============================================================
+*.db
+*.sqlite
+*.sqlite3
+backend/instance/
+
+
+# ============================================================
+# 3. CACHÉ DE PYTHON  ← Archivos que Python genera automáticamente
+# ============================================================
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+
+# ============================================================
+# 4. ENTORNO VIRTUAL  ← Cada quien instala el suyo con requirements.txt
+# ============================================================
+venv/
+env/
+.venv/
+.env/
+ENV/
+backend/venv/
+backend/env/
+
+
+# ============================================================
+# 5. VS CODE  ← Configuración local de tu máquina, no del proyecto
+# ============================================================
+.vscode/settings.json
+.vscode/launch.json
+
+# Sí se sube (configuración compartida del equipo):
+# .vscode/extensions.json
+
+
+# ============================================================
+# 6. SISTEMA OPERATIVO WINDOWS
+# ============================================================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+
+# ============================================================
+# 7. SISTEMA OPERATIVO MAC (por si alguien del equipo usa Mac)
+# ============================================================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+
+# ============================================================
+# 8. LOGS Y ARCHIVOS TEMPORALES
+# ============================================================
+*.log
+*.tmp
+*.temp
+flask_session/
+instance/
+
+
+# ============================================================
+# 9. DISTRIBUCIÓN Y EMPAQUETADO DE PYTHON
+# ============================================================
+dist/
+build/
+*.egg-info/
+*.egg
+MANIFEST
+
+
+# ============================================================
+# 10. PYTEST Y COBERTURA DE TESTS
+# ============================================================
+.pytest_cache/
+.coverage
+htmlcov/

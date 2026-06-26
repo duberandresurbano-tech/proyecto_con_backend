@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/perfil.css') }}">
+</head>
+<body>
+
+    <div class="phone">
+    <form class="profile-card">
+        <a href="{{ url_for('main.inicio') }}" id="btn-regresar" class="btn-regresar" aria-label="Atrás"><i class="fa-solid fa-arrow-left"></i></a>
+        <a href="#" class="top-icon right" onclick="openNotificationModal()"><i class="fa-solid fa-bell"></i></a>
+
+        <div class="profile-avatar-container">
+            <div id="mainProfilePic" class="profile-avatar" onclick="openPhotoModal()">
+                <i class="fa-solid fa-camera"></i>
+            </div>
+        </div>
+
+        <h2>Mi Perfil</h2>
+        <div id="perfilMsg"></div> 
+        
+        <div class="field-grid">
+            <div class="field">
+                <label>Nombre:</label>
+                <input type="text" id="perfilNombre" disabled> 
+            </div>
+            <div class="field">
+                <label>Apellido:</label>
+                <input type="text" id="perfilApellido" placeholder="Ingresa tu apellido"> 
+            </div>
+            <div class="field">
+                <label>Correo Electrónico:</label>
+                <input type="email" id="perfilCorreo" disabled> 
+            </div>
+            <div class="field">
+                <label>Teléfono:</label>
+                <input type="tel" id="perfilTelefono" disabled> 
+            </div>
+        </div>
+
+        <button type="button" id="btnGuardarPerfil">GUARDAR CAMBIOS</button>
+    </form>
+</div>
+</div>
+
+    <!-- Modal de foto de perfil -->
+    <div class="modal-overlay" id="photoEditModal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closePhotoModal()">&times;</span>
+        <p style="font-weight: bold; letter-spacing: 0.1em;">ELEGIR FOTO DE PERFIL</p>
+        
+        <div class="photo-grid">
+            <div class="profile-option" data-photo-src="{{ url_for('static', filename='img/icono_hombre.png') }}" onclick="selectPhoto(this)">
+                <img src="{{ url_for('static', filename='img/icono_hombre.png') }}">
+            </div>
+            <div class="profile-option" data-photo-src="{{ url_for('static', filename='img/icono_mujer.png') }}" onclick="selectPhoto(this)">
+                <img src="{{ url_for('static', filename='img/icono_mujer.png') }}">
+            </div>
+            <div class="profile-option upload-option" onclick="triggerGallerUpload()">
+                <div class="upload-box">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                <input type="file" id="galleryInput" accept="image/*" style="display: none;" onchange="handleGalleryFile(this)">
+            </div>
+        </div>
+        
+        <button class="save-btn" onclick="applyPhotoChange()">ACEPTAR</button>
+    </div>
+</div>
+
+    <!-- Modal de notificaciones -->
+    <div class="modal-overlay" id="notificationModal">
+        <div class="notification-content">
+            <span class="close-notif" onclick="closeNotificationModal()">&times;</span>
+            <div class="notif-icon">
+                <i class="fa-solid fa-bell-slash"></i>
+            </div>
+            <h3>NOTIFICACIONES</h3>
+            <p>No tienes notificaciones pendientes por el momento.</p>
+            <button class="notif-btn" onclick="closeNotificationModal()">ENTENDIDO</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/perfil.js') }}"></script>
+</body>
+</html>

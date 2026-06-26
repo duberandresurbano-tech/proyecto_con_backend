@@ -15,8 +15,7 @@ import {
   addDoc,
   query,
   orderBy,
-  serverTimestamp,
-  deleteDoc
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // ── CONFIG FIREBASE ──────────────────────────────────────
@@ -46,6 +45,7 @@ const digitInputs = document.querySelectorAll(".code-digit");
 // ══════════════════════════════════════════════════════════
 function toast(msg, esError = false) {
   const container = $("toast-container");
+  if (!container) return;
   const el = document.createElement("div");
   el.className = "toast" + (esError ? " err" : "");
   el.textContent = msg;
@@ -59,13 +59,16 @@ function toast(msg, esError = false) {
 function mostrarPantalla(id) {
   ["screen-access", "screen-espera", "screen-chat"].forEach(s => {
     const el = $(s);
-    el.classList.remove("active");
-    el.style.display = "none";
+    if (el) {
+      el.classList.remove("active");
+      el.style.display = "none";
+    }
   });
   const target = $(id);
-  target.style.display = "flex";
-  // Pequeño delay para que el display:flex tome efecto antes de añadir la clase
-  requestAnimationFrame(() => target.classList.add("active"));
+  if (target) {
+    target.style.display = "flex";
+    requestAnimationFrame(() => target.classList.add("active"));
+  }
 }
 
 // ══════════════════════════════════════════════════════════
@@ -88,14 +91,12 @@ async function intentarRecuperarSesion() {
 
     const sala = snap.data();
 
-    // Si la sala ya fue terminada, limpiar
     if (sala.estado === "terminado") {
       limpiarSesion();
       toast("La sala anterior fue cerrada.", true);
       return false;
     }
 
-    // Reconectar al host si estaba esperando
     if (sala.estado === "esperando" && myRole === "host") {
       roomCode = roomId.replace("sala_", "");
       mostrarPantalla("screen-espera");
@@ -104,11 +105,10 @@ async function intentarRecuperarSesion() {
       return true;
     }
 
-    // Si el chat estaba conectado, volver directo al chat
     if (sala.estado === "conectado") {
       roomCode = roomId.replace("sala_", "");
       const nombrePar = myRole === "host" ? sala.guestNombre : sala.hostNombre;
-      abrirChat(nombrePar, /* esRecuperacion */ true);
+      abrirChat(nombrePar, true);
       return true;
     }
   } catch (e) {
@@ -140,8 +140,10 @@ async function crearSala(name) {
   guardarSesion();
 
   const btn = $("btn-crear");
-  btn.disabled = true;
-  btn.querySelector("span").textContent = "Creando sala...";
+  if (btn) {
+    btn.disabled = true;
+    btn.querySelector("span").textContent = "Creando sala...";
+  }
 
   try {
     await setDoc(doc(db, "salas", roomId), {
@@ -163,12 +165,13 @@ async function crearSala(name) {
     toast("Error al crear la sala.", true);
     limpiarSesion();
   } finally {
-    btn.disabled = false;
-    btn.querySelector("span").textContent = "GENERAR CÓDIGO";
+    if (btn) {
+      btn.disabled = false;
+      btn.querySelector("span").textContent = "GENERAR CÓDIGO";
+    }
   }
 }
 
-// ── Oyente en tiempo real del estado de la sala (para el host en espera)
 function escucharEstadoSala() {
   if (unsubscribeRoom) unsubscribeRoom();
 
@@ -178,7 +181,7 @@ function escucharEstadoSala() {
 
     if (sala.estado === "conectado" && sala.guestId) {
       if (unsubscribeRoom) { unsubscribeRoom(); unsubscribeRoom = null; }
-      abrirChat(sala.guestNombre);
+      abrirChat(sala.guestNombre, false);
     }
 
     if (sala.estado === "terminado") {
@@ -204,8 +207,10 @@ async function unirseASala(name, code) {
   myRole   = "guest";
 
   const btn = $("btn-unirse");
-  btn.disabled = true;
-  btn.querySelector("span").textContent = "Conectando...";
+  if (btn) {
+    btn.disabled = true;
+    btn.querySelector("span").textContent = "Conectando...";
+  }
 
   try {
     const salaSnap = await getDoc(doc(db, "salas", roomId));
@@ -232,7 +237,7 @@ async function unirseASala(name, code) {
       estado:      "conectado"
     });
 
-    abrirChat(sala.hostNombre);
+    abrirChat(sala.hostNombre, false);
 
   } catch(err) {
     console.error("Error al unirse:", err);
@@ -240,47 +245,42 @@ async function unirseASala(name, code) {
     limpiarSesion();
   } finally {
     isConnecting = false;
-    btn.disabled = false;
-    btn.querySelector("span").textContent = "UNIRME AL CHAT";
+    if (btn) {
+      btn.disabled = false;
+      btn.querySelector("span").textContent = "UNIRME AL CHAT";
+    }
   }
 }
 
 // ══════════════════════════════════════════════════════════
-//  ABRIR CHAT
+//  ABRIR CHAT Y CONFIGURACIÓN DE CABECERA AUTOMÁTICA
 // ══════════════════════════════════════════════════════════
-function abrirChat(nombreCompañero, esRecuperacion = false) {
+function abrirChat(nombreOtro, esRecuperacion = false) {
   mostrarPantalla("screen-chat");
+  
+  // Setea el identificador visual de la sala en la cabecera
+  $("chat-room-code").textContent = "# " + roomCode;
 
-  // Cabecera
-  $("chat-peer-name").textContent    = nombreCompañero;
-  $("chat-peer-avatar").textContent  = nombreCompañero.charAt(0).toUpperCase();
-  $("chat-room-code").textContent    = "# " + roomCode;
-
-  // Estado online
+  // Pintamos los datos reales del otro usuario conectados en tiempo real
+  $("chat-peer-name").innerText = nombreOtro;
+  $("chat-peer-avatar").innerText = nombreOtro.charAt(0).toUpperCase();
+  
   const dot = $("chat-status-dot");
   dot.classList.remove("waiting");
   dot.classList.add("online");
-  $("chat-status-txt").textContent = "en línea";
-
-  // Desbloquear input
+  $("chat-status-txt").innerText = "en línea";
+  
   $("input-bar").classList.remove("locked");
-  $("msg-input").focus();
 
   if (!esRecuperacion) toast("¡Chat conectado!");
-
-  // Mensaje de sistema de bienvenida
   if (!esRecuperacion) {
     agregarMensajeSistema("Chat iniciado — los mensajes son privados ✦");
   }
 
-  // Escuchar si la sala es terminada por el otro
   escucharTerminacion();
-
-  // Iniciar escucha de mensajes en tiempo real
   escucharMensajes();
 }
 
-// ── Oyente para detectar cierre de sala por la contraparte
 function escucharTerminacion() {
   if (unsubscribeRoom) unsubscribeRoom();
 
@@ -312,12 +312,10 @@ function escucharMensajes() {
   const mensajesRef = collection(db, "salas", roomId, "mensajes");
   const q = query(mensajesRef, orderBy("enviadoEn", "asc"));
 
-  // Cargar mensajes existentes (recuperación de sesión)
   unsubscribeMensajes = onSnapshot(q, (snapshot) => {
     snapshot.docChanges().forEach((change) => {
       if (change.type === "added") {
         const msg = change.doc.data();
-        // Evitar duplicar mensajes propios (se muestran al enviar optimistamente)
         if (msg.autorId !== myId) {
           renderMensaje(msg.autor, msg.texto, "recv", msg.hora);
         }
@@ -332,8 +330,6 @@ async function enviarMensaje() {
   if (!texto) return;
 
   input.value = "";
-
-  // Mostrar optimistamente en pantalla
   const hora = horaActual();
   renderMensaje("Tú", texto, "sent", hora);
 
@@ -356,7 +352,6 @@ async function enviarMensaje() {
 // ══════════════════════════════════════════════════════════
 function renderMensaje(autor, texto, tipo, hora) {
   const area = $("chat-messages");
-
   const row = document.createElement("div");
   row.className = "msg-row " + tipo;
 
@@ -397,25 +392,15 @@ function horaActual() {
 // ══════════════════════════════════════════════════════════
 //  SALIR DEL CHAT
 // ══════════════════════════════════════════════════════════
-function mostrarModalSalir() {
-  $("modal-salir").style.display = "flex";
-}
-
-function ocultarModalSalir() {
-  $("modal-salir").style.display = "none";
-}
+function mostrarModalSalir() { $("modal-salir").style.display = "flex"; }
+function ocultarModalSalir() { $("modal-salir").style.display = "none"; }
 
 async function confirmarSalir() {
   ocultarModalSalir();
-
   try {
-    // Marcar sala como terminada en Firebase
     await updateDoc(doc(db, "salas", roomId), { estado: "terminado" });
-  } catch(e) {
-    console.error("Error al cerrar sala:", e);
-  }
+  } catch(e) { console.error("Error al cerrar sala:", e); }
 
-  // Detener oyentes
   if (unsubscribeRoom)     { unsubscribeRoom();     unsubscribeRoom = null; }
   if (unsubscribeMensajes) { unsubscribeMensajes(); unsubscribeMensajes = null; }
 
@@ -425,23 +410,18 @@ async function confirmarSalir() {
   toast("Has salido del chat.");
 }
 
-// ══════════════════════════════════════════════════════════
-//  CANCELAR ESPERA (HOST)
-// ══════════════════════════════════════════════════════════
 async function cancelarEspera() {
   if (unsubscribeRoom) { unsubscribeRoom(); unsubscribeRoom = null; }
-
   try {
     await updateDoc(doc(db, "salas", roomId), { estado: "terminado" });
-  } catch(e) { /* sala puede no existir */ }
-
+  } catch(e) {}
   limpiarSesion();
   mostrarPantalla("screen-access");
   resetearAcceso();
 }
 
 // ══════════════════════════════════════════════════════════
-//  UTILIDADES
+//  UTILIDADES Y CONTROLADORES DE EVENTOS ACTIVO
 // ══════════════════════════════════════════════════════════
 function guardarSesion() {
   localStorage.setItem("planclub_id",   myId);
@@ -451,64 +431,64 @@ function guardarSesion() {
 }
 
 function resetearAcceso() {
-  // Limpiar campos
-  $("input-name-crear").value  = "";
-  $("input-name-unirse").value = "";
   digitInputs.forEach(d => { d.value = ""; d.classList.remove("filled"); });
   $("chat-messages").innerHTML = "";
-
-  // Resetear estado del dot
   const dot = $("chat-status-dot");
   dot.classList.remove("online");
   dot.classList.add("waiting");
   $("chat-status-txt").textContent = "conectando";
   $("input-bar").classList.add("locked");
 
-  // Volver a tab crear
   $("tab-crear").classList.add("active");
   $("tab-unirse").classList.remove("active");
   $("panel-crear").style.display = "flex";
   $("panel-unirse").style.display = "none";
 }
 
-// ══════════════════════════════════════════════════════════
-//  HANDLERS de EVENTOS
-// ══════════════════════════════════════════════════════════
+// --- ASIGNACIÓN DE CLICK: CREAR SALA AUTOMÁTICO ---
+const btnCrear = $("btn-crear");
+if (btnCrear) {
+  btnCrear.addEventListener('click', (e) => {
+    e.preventDefault();
+    // Lee directamente de la sesión guardada por el login principal.
+    const miNombre = localStorage.getItem('userName') || "Usuario VIP";
+    crearSala(miNombre); // 🚀 Llama de verdad a la función de Firebase
+  });
+}
 
-// Crear sala
-$("btn-crear").addEventListener("click", () => {
-  const name = $("input-name-crear").value.trim();
-  if (!name) { $("input-name-crear").focus(); toast("Escribe tu nombre primero."); return; }
-  crearSala(name);
-});
-$("input-name-crear").addEventListener("keydown", e => {
-  if (e.key === "Enter") $("btn-crear").click();
-});
+// --- ASIGNACIÓN DE CLICK: UNIRSE A SALA AUTOMÁTICO ---
+const btnUnirse = $("btn-unirse");
+if (btnUnirse) {
+  btnUnirse.addEventListener('click', (e) => {
+    e.preventDefault();
+    const miNombre = localStorage.getItem('userName') || "Usuario VIP";
+    
+    // Captura los 6 números
+    const codigoInput = Array.from(digitInputs).map(i => i.value).join('');
+    
+    if (codigoInput.length === 6) {
+      unirseASala(miNombre, codigoInput); // 🚀 Conecta de verdad con Firebase
+    } else {
+      toast("Ingresa el código completo de 6 dígitos.", true);
+    }
+  });
+}
 
-// Unirse a sala
-$("btn-unirse").addEventListener("click", () => {
-  const name = $("input-name-unirse").value.trim();
-  if (!name) { $("input-name-unirse").focus(); toast("Escribe tu nombre primero."); return; }
-  const code = [...digitInputs].map(d => d.value).join("");
-  if (code.length < 6) { digitInputs[0].focus(); toast("Ingresa el código completo."); return; }
-  unirseASala(name, code);
-});
-
-// Cancelar espera (host en lobby)
+// --- EVENTOS DEL ENTORNO ---
 $("btn-cancelar-espera").addEventListener("click", cancelarEspera);
-
-// Enviar mensaje
 $("btn-send").addEventListener("click", enviarMensaje);
 $("msg-input").addEventListener("keydown", e => {
   if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); enviarMensaje(); }
 });
 
-// Salir del chat
+$("btn-regresar-chat").addEventListener("click", () => {
+  window.location.href = "/inicio"; // Regresar a inicio
+});
 $("btn-salir-chat").addEventListener("click", mostrarModalSalir);
 $("btn-confirmar-salir").addEventListener("click", confirmarSalir);
 $("btn-cancelar-salir").addEventListener("click", ocultarModalSalir);
 
-// Tabs acceso
+// --- CAMBIO ENTRE PANELES ---
 $("tab-crear").addEventListener("click", () => {
   $("tab-crear").classList.add("active");
   $("tab-unirse").classList.remove("active");
@@ -522,7 +502,7 @@ $("tab-unirse").addEventListener("click", () => {
   $("panel-crear").style.display = "none";
 });
 
-// Digits del código de 6 dígitos
+// --- ENTRADA DE INPUTS DE CÓDIGO ---
 digitInputs.forEach((inp, idx) => {
   inp.addEventListener("input", () => {
     inp.value = inp.value.replace(/\D/g, "").slice(-1);
@@ -548,7 +528,12 @@ digitInputs.forEach((inp, idx) => {
   });
 });
 
-// ══════════════════════════════════════════════════════════
-//  INIT — intentar recuperar sesiónal cargar la págin
-// ══════════════════════════════════════════════════════════
-intentarRecuperarSesion();
+// ── REDIRECCIÓN DE SEGURIDAD (Si entra directo sin pasar por el Login) ──
+document.addEventListener('DOMContentLoaded', () => {
+  const loginActivo = localStorage.getItem('userName');
+  if (!loginActivo) {
+    window.location.href = "/"; // Devuelve al login de PlanClub
+  } else {
+    intentarRecuperarSesion();
+  }
+});

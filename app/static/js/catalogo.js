@@ -6,12 +6,12 @@ const bdProductos = [
     { id: 5, nombre: 'Águila', precio: 3500, cat: 'bebidas', img: 'https://imgproxy.domestika.org/unsafe/rs:fill/plain/src://content-items/002/864/382/Aguila_logo-original.png?1552905177' },
     { id: 6, nombre: 'Powerade', precio: 5000, cat: 'bebidas', img: 'https://logowik.com/content/uploads/images/powerade374.logowik.com.webp' },
     { id: 7, nombre: 'Aguardiente Amarillo', precio: 50000, cat: 'bebidas', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0ro27SpW_X4XaTzLFQB2BWwNb80we3Kj9Ng&s' },
-    { id: 8, nombre: 'Ron Viejo de Caldas', precio: 62000, cat: 'bebidas', img: 'https://www.ronviejodecaldasrum.com/image/5862128.1593880979000/ronviego_logo_RED_W_RED_STROKE_540X410_300_O.png' },
-    { id: 14, nombre: 'Club Colombia', precio: 5500, cat: 'bebidas', img: 'https://logowik.com/content/uploads/images/club-colombia5934.logowik.com.webp' },
-    { id: 15, nombre: 'Vodka Absolut', precio: 85000, cat: 'bebidas', img: 'https://logowik.com/content/uploads/images/absolut-vodka5819.jpg' },
+    { id: 8, nombre: 'Ron Viejo de Caldas', precio: 62000, cat: 'bebidas', img: 'https://licoresdelgolfo.com/wp-content/uploads/2025/08/ronviejo.png' },
+    { id: 14, nombre: 'Club Colombia', precio: 5500, cat: 'bebidas', img: 'https://rutadelacerveza.weebly.com/uploads/1/6/0/6/16066944/club-colombia_orig.png' },
+    { id: 15, nombre: 'Vodka Absolut', precio: 85000, cat: 'bebidas', img: 'https://w7.pngwing.com/pngs/72/288/png-transparent-absolut-vodka-hd-logo.png' },
     
     { id: 9, nombre: '2x1 Aguardiente Amarillo', precio: 75000, cat: 'promociones', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0ro27SpW_X4XaTzLFQB2BWwNb80we3Kj9Ng&s' },
-    { id: 10, nombre: 'Ron Caldas + 15% Descuento', precio: 52700, cat: 'promociones', img: 'https://www.ronviejodecaldasrum.com/image/5862128.1593880979000/ronviego_logo_RED_W_RED_STROKE_540X410_300_O.png' },
+    { id: 10, nombre: 'Ron Caldas + 15% Descuento', precio: 52700, cat: 'promociones', img: 'https://licoresdelgolfo.com/wp-content/uploads/2025/08/ronviejo.png' },
     { id: 11, nombre: 'Balde de Poker (6 Unidades)', precio: 18000, cat: 'promociones', img: 'https://images.seeklogo.com/logo-png/18/1/cerveza-poker-logo-png_seeklogo-184736.png' },
     
     { id: 12, nombre: 'Combo Amigos (Media Amarillo + 4 Pokers)', precio: 60000, cat: 'combos', img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&auto=format&fit=crop&q=60' },

@@ -38,13 +38,8 @@
           </div>
         </div>
 
-        <!-- Panel Crear Sala -->
         <div id="panel-crear" style="display:flex; flex-direction:column; gap:18px;">
-          <div class="field-group">
-            <label class="field-label">TU NOMBRE</label>
-            <input class="neon-input" id="input-name-crear" type="text" placeholder="Ej: Diego" autocomplete="off"/>
-          </div>
-          <button class="enter-btn" id="btn-crear">
+          <button class="enter-btn" id="btn-crear" type="button">
             <span>GENERAR CÓDIGO</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -52,12 +47,7 @@
           </button>
         </div>
 
-        <!-- Panel Unirse a Sala -->
         <div id="panel-unirse" style="display:none; flex-direction:column; gap:18px;">
-          <div class="field-group">
-            <label class="field-label">TU NOMBRE</label>
-            <input class="neon-input" id="input-name-unirse" type="text" placeholder="Ej: Laura" autocomplete="off"/>
-          </div>
           <div class="field-group">
             <label class="field-label">CÓDIGO DE 6 DÍGITOS</label>
             <div class="code-inputs">
@@ -70,7 +60,7 @@
             </div>
             <span class="field-hint">El código lo genera quien crea la sala</span>
           </div>
-          <button class="enter-btn" id="btn-unirse">
+          <button class="enter-btn" id="btn-unirse" type="button">
             <span>UNIRME AL CHAT</span>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -84,25 +74,37 @@
 
   <!-- PANTALLA 2: ESPERA (Lobby) -->
   <div id="screen-espera" class="screen">
-    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:28px; padding:24px;">
+    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%; gap:28px; padding:24px;">
+      
+      <!-- Un solo Logo -->
       <div class="brand-logo">
         <span class="brand-name">PLANCLUB</span>
         <span class="brand-tag">VIP CHAT</span>
       </div>
-      <div class="access-card" style="max-width:380px; width:100%; text-align:center; gap:20px;">
+
+      <!-- Una SOLA tarjeta de acceso limpia -->
+      <div class="access-card" style="max-width:380px; width:100%; text-align:center; display:flex; flex-direction:column; gap:20px;">
         <div class="card-header-line"></div>
         <p class="access-subtitle">SALA CREADA — ESPERANDO AL OTRO</p>
+        
         <div class="code-display-box">
           <span class="code-display-label">COMPARTE ESTE CÓDIGO</span>
           <span class="code-display-value" id="espera-code">——</span>
           <span class="code-display-sub">El otro debe ingresar este número</span>
         </div>
+
         <div style="display:flex; align-items:center; gap:10px; justify-content:center; color:#7a7f99; font-size:12px;">
           <div class="waiting-spinner"></div>
           <span>Esperando conexión...</span>
         </div>
+
         <button class="enter-btn" id="btn-cancelar-espera" style="background:transparent; border:1px solid var(--border2); color:var(--text-dim); margin-top:4px;">
           <span>CANCELAR</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
         </button>
       </div>
     </div>
@@ -113,6 +115,11 @@
     <div class="chat-layout">
 
       <div class="chat-header">
+        <button class="icon-btn" id="btn-regresar-chat" title="Regresar al inicio">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+        </button>
         <div class="header-avatar" id="chat-peer-avatar">?</div>
         <div class="header-info">
           <span class="header-name" id="chat-peer-name">Conectando...</span>

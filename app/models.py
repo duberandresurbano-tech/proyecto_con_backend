@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 db = SQLAlchemy()
-
 
 # ==========================================
 # 1. TABLA: ROL
@@ -10,7 +10,7 @@ class Rol(db.Model):
     __tablename__ = 'rol'
 
     id_rol = db.Column(db.String(20), primary_key=True)
-    nombre = db.Column(db.String(20), nullable=False)
+    nombre = db.Column(db.String(50), nullable=False) # Ampliado a 50 por si acaso
 
     usuarios_asociados = db.relationship(
         'UsuarioRol', backref='rol_perfil',
@@ -52,13 +52,15 @@ class PermisosRol(db.Model):
 class Usuario(db.Model):
     __tablename__ = 'usuario'
 
-    id_usuario   = db.Column(db.String(20),  primary_key=True)
-    nombre       = db.Column(db.String(20),  nullable=False)
-    apellido     = db.Column(db.String(20),  nullable=False)
-    correo       = db.Column(db.String(100), nullable=False, unique=True)
-    contrasena   = db.Column(db.String(255), nullable=False)  # Sin Ñ para evitar encoding issues
-    estado       = db.Column(db.String(20),  nullable=False)
-    verificacion = db.Column(db.String(20),  nullable=False)
+    id_usuario       = db.Column(db.String(20), primary_key=True) # Ej: 'U001'
+    nombre           = db.Column(db.String(50), nullable=False)
+    apellido         = db.Column(db.String(50), nullable=False)
+    correo           = db.Column(db.String(100), nullable=False, unique=True) # <-- Tu llave única de acceso
+    celular          = db.Column(db.String(20), nullable=False) # Útil para contacto de reservas
+    fecha_nacimiento = db.Column(db.Date, nullable=False) # <-- Para cumplir la regla U1 en el backend
+    contrasena       = db.Column(db.String(255), nullable=False)
+    estado           = db.Column(db.String(20), nullable=False, default='Activa')
+    id_rol           = db.Column(db.String(20), db.ForeignKey('rol.id_rol'), nullable=False)
 
     # Relaciones
     telefonos        = db.relationship('Telefono',   backref='dueno',              lazy=True, cascade="all, delete-orphan")
@@ -67,9 +69,8 @@ class Usuario(db.Model):
     pedidos          = db.relationship('Pedido',     backref='usuario_solicitante',lazy=True)
     ventas           = db.relationship('Venta',      backref='vendedor',           lazy=True)
     incidencias      = db.relationship('Incidencia', backref='usuario_reporta',    lazy=True)
-    reseñas          = db.relationship('Resena',     backref='autor',              lazy=True)
+    resenas          = db.relationship('Resena',     backref='autor',              lazy=True)
 
-    # CORREGIDO: Mensajes con foreign_keys explícitos para evitar ambigüedad
     mensajes_enviados  = db.relationship(
         'Mensajes',
         foreign_keys='Mensajes.id_emisor',
@@ -127,7 +128,7 @@ class Mesa(db.Model):
     numero    = db.Column(db.Integer,     nullable=False, unique=True)
     capacidad = db.Column(db.Integer,     nullable=False)
     zona      = db.Column(db.String(20),  nullable=False)
-    estado    = db.Column(db.String(20),  nullable=False)
+    estado    = db.Column(db.String(20),  nullable=False, default='Disponible')
 
     reservas = db.relationship('Reserva', backref='mesa_reservada', lazy=True)
     pedidos  = db.relationship('Pedido',  backref='mesa_ocupada',   lazy=True)
@@ -142,8 +143,8 @@ class Reserva(db.Model):
     id_reserva        = db.Column(db.String(20), primary_key=True)
     id_usuario        = db.Column(db.String(20), db.ForeignKey('usuario.id_usuario', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     id_mesa           = db.Column(db.String(20), db.ForeignKey('mesa.id_mesa',       onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
-    fecha             = db.Column(db.Date,        nullable=False)
-    estado            = db.Column(db.String(20),  nullable=False)
+    fecha             = db.Column(db.DateTime,    nullable=False, default=datetime.utcnow) # Ajustado para control exacto
+    estado            = db.Column(db.String(20),  nullable=False, default='Pendiente')
     cantidad_personas = db.Column(db.Integer,     nullable=False)
 
 
@@ -154,13 +155,12 @@ class Producto(db.Model):
     __tablename__ = 'producto'
 
     id_producto     = db.Column(db.String(20), primary_key=True)
-    nombre          = db.Column(db.String(50), nullable=False)
-    precio          = db.Column(db.Integer,    nullable=False)
-    categoria       = db.Column(db.String(20), nullable=False)
-    cantidad_actual = db.Column(db.Integer,    nullable=False)
-    punto_reorden   = db.Column(db.Integer,    nullable=False)
+    nombre          = db.Column(db.String(100), nullable=False) # Ampliado para nombres de platos/bebidas extensos
+    precio          = db.Column(db.Float,      nullable=False) # Cambiado a Float para soportar cálculos complejos
+    categoria       = db.Column(db.String(30), nullable=False)
+    cantidad_actual = db.Column(db.Integer,    nullable=False, default=0)
+    punto_reorden   = db.Column(db.Integer,    nullable=False, default=5)
 
-    # AGREGADO: relaciones inversas que faltaban
     detalles_pedido = db.relationship('DetallePedido', backref='producto', lazy=True)
     detalles_venta  = db.relationship('DetalleVenta',  backref='producto', lazy=True)
     recetas         = db.relationship('Recetas',        backref='producto', lazy=True)
@@ -175,8 +175,8 @@ class Pedido(db.Model):
     id_pedido     = db.Column(db.String(20),  primary_key=True)
     id_usuario    = db.Column(db.String(20),  db.ForeignKey('usuario.id_usuario', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     id_mesa       = db.Column(db.String(20),  db.ForeignKey('mesa.id_mesa',       onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
-    fecha         = db.Column(db.Date,         nullable=False)
-    estado        = db.Column(db.String(20),   nullable=False)
+    fecha         = db.Column(db.DateTime,     nullable=False, default=datetime.utcnow)
+    estado        = db.Column(db.String(20),   nullable=False, default='En Cocina')
     metodo_pago   = db.Column(db.String(20),   nullable=False)
     observaciones = db.Column(db.Text,         nullable=True)
 
@@ -194,8 +194,8 @@ class DetallePedido(db.Model):
     id_pedido         = db.Column(db.String(20), db.ForeignKey('pedido.id_pedido',     onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     id_producto       = db.Column(db.String(20), db.ForeignKey('producto.id_producto', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     cantidad          = db.Column(db.Integer, nullable=False)
-    precio_unitario   = db.Column(db.Integer, nullable=False)
-    precio            = db.Column(db.Integer, nullable=False)
+    precio_unitario   = db.Column(db.Float,   nullable=False)
+    precio            = db.Column(db.Float,   nullable=False) # Total calculado de cantidad * precio_unitario
 
 
 # ==========================================
@@ -205,10 +205,10 @@ class Insumo(db.Model):
     __tablename__ = 'insumo'
 
     id_insumo     = db.Column(db.String(20), primary_key=True)
-    nombre        = db.Column(db.String(20), nullable=False)
-    unidad        = db.Column(db.String(20), nullable=False)
-    costo_envase  = db.Column(db.Integer,    nullable=False)
-    costo_unitario= db.Column(db.Integer,    nullable=False)
+    nombre        = db.Column(db.String(50), nullable=False)
+    unidad        = db.Column(db.String(20), nullable=False) # gramos, ml, unidades, etc.
+    costo_envase  = db.Column(db.Float,      nullable=False)
+    costo_unitario= db.Column(db.Float,      nullable=False)
 
 
 # ==========================================
@@ -219,7 +219,7 @@ class Recetas(db.Model):
 
     id_receta   = db.Column(db.String(20), primary_key=True)
     id_producto = db.Column(db.String(20), db.ForeignKey('producto.id_producto', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
-    nombre      = db.Column(db.String(20), nullable=False)
+    nombre      = db.Column(db.String(50), nullable=False)
 
     detalles_receta = db.relationship('DetalleReceta', backref='receta_padre', lazy=True, cascade="all, delete-orphan")
 
@@ -233,7 +233,7 @@ class DetalleReceta(db.Model):
     id_detalle_receta = db.Column(db.String(20), primary_key=True)
     id_receta         = db.Column(db.String(20), db.ForeignKey('recetas.id_receta',  onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     id_insumo         = db.Column(db.String(20), db.ForeignKey('insumo.id_insumo',   onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
-    cantidad          = db.Column(db.Integer, nullable=False)
+    cantidad          = db.Column(db.Integer, nullable=False) # Cantidad del insumo requerida
 
 
 # ==========================================
@@ -244,9 +244,9 @@ class Venta(db.Model):
 
     id_venta    = db.Column(db.String(20), primary_key=True)
     id_usuario  = db.Column(db.String(20), db.ForeignKey('usuario.id_usuario', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
-    fecha       = db.Column(db.Date,        nullable=False)
+    fecha       = db.Column(db.DateTime,    nullable=False, default=datetime.utcnow)
     metodo_pago = db.Column(db.String(20),  nullable=False)
-    estado      = db.Column(db.String(20),  nullable=False)
+    estado      = db.Column(db.String(20),  nullable=False, default='Completada')
 
     detalles_venta = db.relationship('DetalleVenta', backref='venta_padre', lazy=True, cascade="all, delete-orphan")
 
@@ -260,9 +260,9 @@ class DetalleVenta(db.Model):
     id_detalle_venta = db.Column(db.String(20), primary_key=True)
     id_venta         = db.Column(db.String(20), db.ForeignKey('venta.id_venta',        onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     id_producto      = db.Column(db.String(20), db.ForeignKey('producto.id_producto',  onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
-    precio_unitario  = db.Column(db.Integer, nullable=False)
+    precio_unitario  = db.Column(db.Float,   nullable=False)
     cantidad         = db.Column(db.Integer, nullable=False)
-    total            = db.Column(db.Integer, nullable=False)
+    total            = db.Column(db.Float,   nullable=False)
 
 
 # ==========================================
@@ -273,9 +273,9 @@ class Pago(db.Model):
 
     id_pago   = db.Column(db.String(20), primary_key=True)
     id_pedido = db.Column(db.String(20), db.ForeignKey('pedido.id_pedido', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
-    fecha     = db.Column(db.Date,        nullable=False)
+    fecha     = db.Column(db.DateTime,    nullable=False, default=datetime.utcnow)
     metodo    = db.Column(db.String(20),  nullable=False)
-    monto     = db.Column(db.Integer,     nullable=False)
+    monto     = db.Column(db.Float,     nullable=False)
 
 
 # ==========================================
@@ -286,18 +286,16 @@ class Incidencia(db.Model):
 
     id_incidencia = db.Column(db.String(20),  primary_key=True)
     id_usuario    = db.Column(db.String(20),  db.ForeignKey('usuario.id_usuario', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
-    fecha         = db.Column(db.Date,         nullable=False)
-    tipo          = db.Column(db.String(20),   nullable=False)
-    descripcion   = db.Column(db.String(100),  nullable=False)
-    estado        = db.Column(db.String(20),   nullable=False)
-    prioridad     = db.Column(db.String(100),  nullable=False)
+    fecha         = db.Column(db.DateTime,     nullable=False, default=datetime.utcnow)
+    tipo          = db.Column(db.String(30),   nullable=False) # Ej: Caja, Barra, Cliente, Inventario
+    descripcion   = db.Column(db.String(255),  nullable=False) # Ampliado para dar más detalle del error
+    estado        = db.Column(db.String(20),   nullable=False, default='Abierto')
+    prioridad     = db.Column(db.String(20),   nullable=False)
     observaciones = db.Column(db.Text,         nullable=True)
 
 
 # ==========================================
 # 19. TABLA: MENSAJES
-# CORREGIDO: foreign_keys explícitos para id_emisor e id_receptor
-# (ambos apuntan a usuario.id_usuario — SQLAlchemy necesita saber cuál es cuál)
 # ==========================================
 class Mensajes(db.Model):
     __tablename__ = 'mensajes'
@@ -307,19 +305,17 @@ class Mensajes(db.Model):
     id_emisor  = db.Column(db.String(20), db.ForeignKey('usuario.id_usuario',   onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     id_receptor= db.Column(db.String(20), db.ForeignKey('usuario.id_usuario',   onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     contenido  = db.Column(db.Text, nullable=False)
+    enviado_el = db.Column(db.DateTime, default=datetime.utcnow) # Para ordenar el historial del chat
 
 
 # ==========================================
 # 20. TABLA: RESENA
-# CORREGIDO: __tablename__ sin ñ para evitar problemas de encoding
-# en SQLite, migraciones y compatibilidad con otros motores
 # ==========================================
 class Resena(db.Model):
-    __tablename__ = 'resena'   # Era 'reseña' — la ñ causaba problemas de encoding
+    __tablename__ = 'resena'
 
     id_resena  = db.Column(db.String(20), primary_key=True)
     id_usuario = db.Column(db.String(20), db.ForeignKey('usuario.id_usuario', onupdate='CASCADE', ondelete='CASCADE'), nullable=False)
     comentario = db.Column(db.Text,    nullable=False)
-    puntuacion = db.Column(db.Integer, nullable=False)
-    fecha      = db.Column(db.Date,    nullable=False)
-    hora       = db.Column(db.Time,    nullable=False)
+    puntuacion = db.Column(db.Integer, nullable=False) # Escala de 1 a 5
+    fecha_hora = db.Column(db.DateTime, nullable=False, default=datetime.utcnow) # Consolidado en un solo campo DateTime

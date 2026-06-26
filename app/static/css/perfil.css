@@ -1,0 +1,384 @@
+/* ============================================================
+   PLANCLUB VIP — perfil.css
+   Aesthetic: Dark luxury · Liquid Glass · Gold
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap');
+
+/* ── RESET & BASE ────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #07080f;
+  --surface: rgba(6, 8, 16, 0.62);
+  --surface2: rgba(4, 5, 12, 0.55);
+  --border: rgba(255, 255, 255, 0.07);
+  --gold: #f5c747;
+  --gold-text: #1a0f00;
+  --text: #ffffff;
+  --text-dim: rgba(255, 255, 255, 0.80);
+  --glass-blur: blur(24px) saturate(1.4) brightness(0.85);
+  --radius-lg: 22px;
+  --radius: 12px;
+  --mono: 'DM Mono', monospace;
+  --sans: 'Syne', sans-serif;
+}
+
+/* Base de la pantalla para PC */
+html, body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  display: flex;
+  flex-direction: column; 
+  align-items: stretch;
+  justify-content: flex-start;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Fondo con destellos de la marca */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: -1;
+  background: 
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(245, 199, 71, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 90%, rgba(255, 188, 3, 0.06) 0%, transparent 60%);
+}
+
+/* ── CONTENEDOR MÓVIL Y ESTRUCTURA DE TARJETA ────────────── */
+.phone {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 60px 40px 40px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile-avatar-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.profile-avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: rgba(245, 199, 71, 0.05);
+  border: 2px dashed var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: var(--gold);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(245, 199, 71, 0.1);
+  background-size: cover;
+  background-position: center;
+}
+
+.profile-avatar:hover {
+  transform: scale(1.05);
+  background: rgba(245, 199, 71, 0.15);
+  box-shadow: 0 0 25px rgba(245, 199, 71, 0.3);
+}
+
+/* Iconos superiores */
+.btn-regresar, .top-icon.right {
+  position: absolute;
+  top: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 18px;
+  transition: color 0.2s, transform 0.2s, background 0.2s;
+  z-index: 10;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.04);
+  text-decoration: none;
+}
+
+.btn-regresar { left: 24px; }
+.top-icon.right { right: 24px; }
+
+.btn-regresar:hover, .top-icon.right:hover { 
+  color: var(--gold); 
+  transform: scale(1.1);
+  background: rgba(245, 199, 71, 0.12);
+}
+
+/* ── TARJETA PERFIL (LIQUID GLASS) ──────────────────────── */
+.profile-card {
+  position: relative;
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.22);
+  border-left: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: var(--radius-lg);
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.70);
+}
+
+.profile-card h2 {
+  font-family: var(--sans);
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+/* ── CAMPOS DE FORMULARIO (INPUTS) ──────────────────────── */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field label {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+
+.field input {
+  background: var(--surface2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  transition: all 0.25s ease;
+}
+
+.field input:focus {
+  outline: none;
+  border-color: rgba(245, 199, 71, 0.4);
+  background: rgba(6, 8, 16, 0.85);
+  box-shadow: 0 0 12px rgba(245, 199, 71, 0.08);
+}
+
+/* Inputs deshabilitados (Fijos) */
+.field input:disabled {
+  color: rgba(255, 255, 255, 0.35);
+  cursor: not-allowed;
+  border-color: transparent;
+  background: rgba(4, 5, 12, 0.3);
+}
+
+/* ── BOTÓN DE GUARDAR ───────────────────────────────────── */
+#btnGuardarPerfil {
+  background: linear-gradient(180deg, #ffda50 0%, #c48b08 100%);
+  border: none;
+  border-radius: var(--radius);
+  color: var(--gold-text);
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  width: 100%;
+  margin-top: 10px;
+}
+
+#btnGuardarPerfil:hover {
+  box-shadow: 0 8px 30px rgba(245, 199, 71, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Contenedor de mensajes de respuesta */
+#perfilMsg {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  min-height: 18px;
+}
+
+/* ── INTERFAZ DE MODALES (FOTO Y NOTIFICACIONES) ────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 5, 12, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 20px;
+}
+
+.modal-content, .notification-content {
+  background: rgba(10, 12, 22, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  max-width: 360px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+  position: relative;
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.profile-option img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: var(--radius);
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.profile-option:hover img { transform: scale(1.05); }
+
+.profile-option.selected img {
+  border-color: var(--gold);
+  box-shadow: 0 0 12px rgba(245, 199, 71, 0.4);
+}
+
+.upload-box {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: rgba(245, 199, 71, 0.03);
+  border: 2px dashed rgba(245, 199, 71, 0.3);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: rgba(245, 199, 71, 0.6);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.profile-option:hover .upload-box {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(245, 199, 71, 0.08);
+  transform: scale(1.03);
+}
+
+.profile-option.selected .upload-box {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(245, 199, 71, 0.12);
+  box-shadow: 0 0 12px rgba(245, 199, 71, 0.4);
+}
+
+.close-btn, .close-notif {
+  position: absolute;
+  top: 14px; right: 18px;
+  font-size: 22px;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.close-btn:hover, .close-notif:hover { color: #ff4455; }
+
+.save-btn, .notif-btn {
+  background: linear-gradient(180deg, #ffda50 0%, #c48b08 100%);
+  border: none;
+  border-radius: var(--radius);
+  color: var(--gold-text);
+  font-family: var(--sans);
+  font-weight: 700;
+  padding: 12px 20px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* ── MEDIA QUERY PARA DISPOSITIVOS MÓVILES (AL FINAL) ── */
+@media (max-width: 680px) {
+  body {
+    display: block;
+    min-height: 100vh;
+    background-attachment: scroll;
+  }
+
+  .phone {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .profile-card {
+    border-radius: 0;
+    border: none;
+    padding: 40px 24px;
+    width: 100%;
+    min-height: 100vh;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    box-sizing: border-box;
+  }
+  
+  .field-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    width: 100%;
+  }
+
+  .field input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .btn-regresar, .top-icon.right {
+    top: 28px;
+  }
+  .btn-regresar { left: 24px; }
+  .top-icon.right { right: 24px; }
+
+  #btnGuardarPerfil {
+    margin-top: 15px;
+    width: 100%;
+  }
+}

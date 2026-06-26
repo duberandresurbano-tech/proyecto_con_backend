@@ -115,9 +115,19 @@ html, body {
    PANTALLA DE ACCESO
    ══════════════════════════════════════════════════════════ */
 #screen-access {
+  display: none; /* Se cambia a active con JS */
   align-items: center;
   justify-content: center;
+  position: fixed; 
+  inset: 0; 
+  z-index: 10;
+  width: 100vw;
+  height: 100vh;
   overflow-y: auto;
+}
+
+#screen-access.active {
+  display: flex; /* Asegura el centrado flexible activo */
 }
 
 .access-container {
@@ -346,7 +356,7 @@ html, body {
 .enter-btn:active  { transform: translateY(0); }
 .enter-btn:disabled { opacity: 0.5; pointer-events: none; }
 
-/* ── Código de sala ─────────────────────────────────────── */
+/* ── Código de sala ────────────────────────────────────── */
 .code-display-box {
   background: rgba(10,7,1,0.55);
   border: 1px solid rgba(245,199,71,0.18);
@@ -500,6 +510,8 @@ html, body {
   transition: all 0.2s; flex-shrink: 0;
 }
 .icon-btn:hover { border-color: rgba(255,68,85,0.45); color: var(--red); box-shadow: 0 0 12px rgba(255,68,85,0.18); }
+
+
 
 /* Área de mensajes */
 .messages-area {

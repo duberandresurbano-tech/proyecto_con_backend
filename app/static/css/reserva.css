@@ -241,6 +241,21 @@ input, .btn-action {
     box-sizing: border-box; 
 }
 
+input[type="date"] {
+    background: #0d0d0d;
+    color: white;
+    border: 1px solid #333;
+    box-shadow: none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: none;
+}
+
+input[type="date"]::placeholder {
+    color: #bbbbbb;
+}
+
 .btn-action { 
     background: linear-gradient(90deg, var(--neon-purple), #7a12f5); 
     border: none; 

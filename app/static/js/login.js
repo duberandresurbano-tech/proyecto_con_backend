@@ -22,9 +22,10 @@ function esMayorDeEdad(fechaNacStr) {
     return edad >= 18;
 }
 
-// --- REGISTRO TEMPORAL (LOCAL STORAGE) ---
+// --- REGISTRO EN BASE DE DATOS ---
 function guardarRegistro() {
-    const user     = document.getElementById('regUser').value.trim();
+    const nombre   = document.getElementById('regNombre').value.trim();
+    const apellido = document.getElementById('regApellido').value.trim();
     const pass     = document.getElementById('regPass').value.trim();
     const telefono = document.getElementById('regTelefono').value.trim();
     const correo   = document.getElementById('regCorreo').value.trim();
@@ -32,7 +33,7 @@ function guardarRegistro() {
     const msg      = document.getElementById('regMsg');
 
     // 1. Campos obligatorios
-    if (!user || !pass || !telefono || !correo || !fechaNac) {
+    if (!nombre || !apellido || !pass || !telefono || !correo || !fechaNac) {
         msg.style.color = "#ff4d4d";
         msg.innerText   = "Por favor, completa todos los campos.";
         return;
@@ -73,15 +74,7 @@ function guardarRegistro() {
         return;
     }
 
-    // 5. Usuario ya existente
-    const savedUser = localStorage.getItem('pc_user');
-    if (savedUser && user.toLowerCase() === savedUser) {
-        msg.style.color = "#ffcc00";
-        msg.innerText   = "Este usuario ya está registrado.";
-        return;
-    }
-
-    // 6. Seguridad de contraseña
+    // 5. Seguridad de contraseña
     const passRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
     if (!passRegex.test(pass)) {
         msg.style.color = "#ff4d4d";
@@ -89,28 +82,56 @@ function guardarRegistro() {
         return;
     }
 
-    // 7. Todo correcto → guardar
-    localStorage.setItem('pc_user',      user.toLowerCase());
-    localStorage.setItem('pc_pass',      pass);
-    localStorage.setItem('pc_telefono',  telefono);
-    localStorage.setItem('pc_correo',    correo);
-    localStorage.setItem('pc_fecha_nac', fechaNac);
+    // 6. Enviar datos a la base de datos
+    const datos = {
+        nombre: nombre,
+        apellido: apellido,
+        correo: correo,
+        celular: telefono,
+        fecha_nacimiento: fechaNac,
+        contrasena: pass
+    };
 
-    msg.style.color    = "#4dff88";
-    msg.style.fontSize = "";
-    msg.style.lineHeight = "";
-    msg.innerText = "¡Registro exitoso! Bienvenido a PlanClub.";
-    setTimeout(hidePanels, 1500);
+    msg.style.color = "#ffcc00";
+    msg.innerText = "Procesando registro...";
+
+    fetch('/api/registro', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(datos)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.mensaje) {
+            msg.style.color = "#4dff88";
+            msg.style.fontSize = "";
+            msg.style.lineHeight = "";
+            msg.innerText = data.mensaje;
+            
+            // Guardar sesión en localStorage para las otras funciones
+            localStorage.setItem('userName', nombre);
+            localStorage.setItem('pc_correo', correo);
+            
+            setTimeout(hidePanels, 1500);
+        } else {
+            msg.style.color = "#ff4d4d";
+            msg.innerText = data.error || "Error en el registro";
+        }
+    })
+    .catch(error => {
+        msg.style.color = "#ff4d4d";
+        msg.innerText = "Error de conexión con el servidor";
+        console.error('Error:', error);
+    });
 }
 
-// --- LOGIN TEMPORAL (LOCAL STORAGE + RUTA FLASK) ---
+// --- LOGIN EN BASE DE DATOS ---
 function validarLogin() {
-    const userIn = document.getElementById('loginUser').value.trim().toLowerCase();
+    const userIn = document.getElementById('loginUser').value.trim();
     const passIn = document.getElementById('loginPass').value.trim();
     const msg = document.getElementById('loginMsg');
-    
-    const savedUser = localStorage.getItem('pc_user');
-    const savedPass = localStorage.getItem('pc_pass');
 
     if (!userIn || !passIn) {
         msg.style.color = "#ffcc00"; 
@@ -118,22 +139,44 @@ function validarLogin() {
         return;
     }
 
-    if (savedUser === null || userIn !== savedUser) {
-        msg.style.color = "#ff4d4d";
-        msg.innerText = "Este usuario no está registrado";
-        return;
-    }
+    msg.style.color = "#ffcc00";
+    msg.innerText = "Verificando credenciales...";
 
-    if (passIn === savedPass) {
-        msg.style.color = "#4dff88"; 
-        msg.innerText = "Usuario correcto ingresando.";
-        
-        // 🛠️ RUTA CORREGIDA: Apunta al endpoint lógico de Flask para ir al Inicio
-        setTimeout(() => { window.location.href = "/inicio"; }, 1500);
-    } else {
-        msg.style.color = "#ff4d4d"; 
-        msg.innerText = "Usuario/contraseña incorrectos";
-    }
+    const datos = {
+        correo: userIn,
+        contrasena: passIn
+    };
+
+    fetch('/api/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(datos)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.mensaje) {
+            msg.style.color = "#4dff88"; 
+            msg.innerText = data.mensaje;
+            
+            // Guardar sesión en localStorage para las otras funciones
+            localStorage.setItem('userName', data.usuario);
+            localStorage.setItem('pc_correo', userIn);
+            localStorage.setItem('userId', data.id_usuario);
+            
+            // Redirigir al inicio
+            setTimeout(() => { window.location.href = "/inicio"; }, 1500);
+        } else {
+            msg.style.color = "#ff4d4d"; 
+            msg.innerText = data.error || "Error en el login";
+        }
+    })
+    .catch(error => {
+        msg.style.color = "#ff4d4d";
+        msg.innerText = "Error de conexión con el servidor";
+        console.error('Error:', error);
+    });
 }
 
 // --- RECUPERAR CONTRASEÑA TEMPORAL ---
@@ -185,3 +228,49 @@ function togglePassword(inputId, icon) {
         icon.textContent = "🙈";
     }
 }
+
+
+// --- seccion chat (keni) ---
+
+// --- MOSTRAR/OCULTAR CONTRASEÑA ---
+function togglePassword(inputId, icon) {
+    const input = document.getElementById(inputId);
+    if (input.type === "password") {
+        input.type = "text";
+        icon.textContent = "🐵";
+    } else {
+        input.type = "password";
+        icon.textContent = "🙈";
+    }
+}
+function borrarTodo() {
+
+    if (!confirm("¿Seguro que deseas borrar todos los datos almacenados?")) {
+        return;
+    }
+
+    localStorage.removeItem('pc_user');
+    localStorage.removeItem('pc_pass');
+    localStorage.removeItem('pc_telefono');
+    localStorage.removeItem('pc_correo');
+    localStorage.removeItem('pc_fecha_nac');
+    localStorage.removeItem('userName');
+
+    const display = document.getElementById('currentUserDisplay');
+
+    if (display) {
+        display.innerText = "Ninguno";
+    }
+
+    alert("Memoria borrada correctamente");
+}
+function abrirAdmin() {
+
+    const usuario = localStorage.getItem('pc_user');
+
+    document.getElementById('currentUserDisplay').innerText =
+        usuario || "Ninguno";
+
+    showPanel('adminPanel');
+}
+// ¡Tu archivo login.js debe terminar aquí! No agregues los listeners del chat en este punto.put
